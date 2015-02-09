@@ -5,6 +5,16 @@
 	<title>ISU-SCADA | {% block title %}Home{% endblock %}</title>
 </head>
 <body>
+<h1>ISU-SCADA</h1>
+<nav>
+	<ul>
+		<li class="active"><a href="{% url 'mimics' %}">Mimics</a></li>
+		<li><a href="/history/">History charts</a></li>
+	</ul>
+</nav>
 
+<div id="welcome">Welcome Elpidio</div>
+<h1 id="header_text">{% block header_text %}Home{% endblock %}</h1>
+{% block content %}{% endblock %}
 </body>
 </html>
