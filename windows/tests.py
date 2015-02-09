@@ -1,5 +1,6 @@
 from django.core.urlresolvers import resolve
 from django.http import HttpRequest
+from django.template.loader import render_to_string
 from django.test import TestCase
 from windows.views import WindowDetailView
 
@@ -16,6 +17,5 @@ class HomePageTest(TestCase):
         generic_window_view.request = request
         response = generic_window_view.dispatch(request)
         self.assertEqual(response.status_code, 200)
-        self.assertIn(b'<html>', response.rendered_content)
-        self.assertIn(b'<title>Mimics</title>', response.rendered_content)  # FIXME: Take aware of ISU-SCADA portion in title
-        self.assertTrue(response.rendered_content.endswith(b'</html>'))
+        expected_html = render_to_string('windows/window_detail.html')
+        self.assertEqual(response.rendered_content.decode(), expected_html)
