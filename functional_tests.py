@@ -134,7 +134,7 @@ class SupervisorTest(unittest.TestCase):
         # Widget in mimic window should have options to add/remove/reorder vars
 
         # Then default mimic page is shown and following elements appears in the content:
-        self.fail('Create this test!')
+        self.fail('Finish this test!')
 
 if __name__ == '__main__':
     unittest.main()
