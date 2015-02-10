@@ -5,6 +5,6 @@ urlpatterns = patterns('',
     # Examples:
     # url(r'^$', 'isuscada.views.home', name='home'),
     url(r'^', include('windows.urls')),
-    url(r'^vars/', include('vars.urls')),
+    url(r'^', include('vars.urls')),
     url(r'^admin/', include(admin.site.urls)),
 )
