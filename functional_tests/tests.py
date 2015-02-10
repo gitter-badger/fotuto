@@ -1,8 +1,8 @@
+from django.test import LiveServerTestCase
 from selenium import webdriver
-import unittest
 
 
-class SupervisorTest(unittest.TestCase):
+class UsersTest(LiveServerTestCase):
     def setUp(self):
         self.browser = webdriver.Firefox()
         self.browser.implicitly_wait(3)
@@ -15,7 +15,7 @@ class SupervisorTest(unittest.TestCase):
 
     def test_supervisor_can_view_mimics_and_charts(self):
         # A visitor go to ISU-SCADA homepage
-        self.browser.get('http://localhost:8000')
+        self.browser.get(self.live_server_url)
 
         # Visitor notice page title and header mention "ISU-SCADA"
         self.assertIn("ISU-SCADA", self.browser.title)
@@ -75,7 +75,7 @@ class SupervisorTest(unittest.TestCase):
 
     def test_operator_can_add_vars_to_view(self):
         # A operator go to add var page
-        self.browser.get('http://localhost:8000/vars/add/')
+        self.browser.get('%s/vars/add/' % self.live_server_url)
 
         # A login form is shown
         # Operator type his credential and proceed to log-in
@@ -135,6 +135,3 @@ class SupervisorTest(unittest.TestCase):
 
         # Then default mimic page is shown and following elements appears in the content:
         self.fail('Finish this test!')
-
-if __name__ == '__main__':
-    unittest.main()
