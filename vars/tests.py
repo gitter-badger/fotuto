@@ -25,27 +25,21 @@ class AddVarTest(TestCase):
         self.assertMultiLineEqual(response.rendered_content.decode(), expected_html)
 
     def test_autogenerate_slug_field(self):
-        device = Device(name="Device 1", slug="device-1", model="111", address="123")
-        device.save()
-        var_form = VarForm(data={
-            'name': "Some Var Name",
-            'device': device.pk,
-        })
-        self.assertTrue(var_form.is_valid())
-        self.assertEqual(var_form.cleaned_data['slug'], 'some-var-name')
+        var = self.save_var_form(name="Some Var Name")
+        self.assertEqual(var.slug, 'some-var-name')
 
     def test_autogenerate_slug_field_must_be_unique(self):
-        device = Device(name="Device 1", slug="device-1", model="111", address="123")
-        device.save()
-        var_data ={
-            'name': "Unique name",
-            'device': device.pk,
-        }
-        var1_form = VarForm(var_data)
-        var1 = var1_form.save()
-        var2_form = VarForm(var_data)
-        var2 = var2_form.save()
+        var_name = "Unique name"
+        var1 = self.save_var_form(name=var_name)
+        var2 = self.save_var_form(name=var_name)
         self.assertEqual(var2.slug, '%s-%s' % (var1.slug, var2.pk - 1))
-        var3_form = VarForm(var_data)
-        var3 = var3_form.save()
+        var3 = self.save_var_form(name=var_name)
         self.assertEqual(var3.slug, '%s-%s' % (var1.slug, var3.pk - 1))
+
+    def save_var_form(self, **var_data):
+        """Fill :class:`~var.forms.VarForm` with data specified and return instance."""
+        if 'device' not in var_data:
+            d, create = Device.objects.get_or_create(name="Device 1", slug="device-1", model="111", address="123")
+            var_data['device'] = d.pk
+        var_form = VarForm(data=var_data)
+        return var_form.save()

@@ -5,11 +5,13 @@ from vars.models import Var
 
 class VarForm(forms.ModelForm):
 
-    slug = forms.SlugField(max_length=25, required=False)
-
     class Meta:
         model = Var
         fields = '__all__'
+
+    def __init__(self, *args, **kwargs):
+        super(VarForm, self).__init__(*args, **kwargs)
+        self.fields['slug'].required = False
 
     def clean_slug(self):
         """
