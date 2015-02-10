@@ -50,11 +50,11 @@ class SupervisorTest(unittest.TestCase):
         # Following elements appears in the content:
 
         # A device name is shown
-        device_name = self.browser.find_elements_by_css_selector('.widget .title')[0].text
+        device_name = self.browser.find_elements_by_css_selector('.mimic .title')[0].text
         self.assertEqual("Router", device_name)
 
         # A variable value indicator and variable's name
-        var_item = self.browser.find_elements_by_css_selector('.widget .var')[0]
+        var_item = self.browser.find_elements_by_css_selector('.mimic .var')[0]
         self.assertEqual("ON", var_item.text)
         self.assertEqual("Working", var_item.get_attribute('title'))
 
@@ -98,11 +98,11 @@ class SupervisorTest(unittest.TestCase):
         # * Mimics -> Add -> Window
         # * Mimics -> Add -> Device
         # * Mimics -> Add -> Var
-        # * Mimics -> Add -> Widget
+        # * Mimics -> Add -> Mimic
         # * Mimics -> Manage -> Windows
         # * Mimics -> Manage -> Devices
         # * Mimics -> Manage -> Vars
-        # * Mimics -> Manage -> Widgets
+        # * Mimics -> Manage -> Mimic
         # * History -> Add -> Chart
         # * History -> Manage -> Charts
 
@@ -131,7 +131,7 @@ class SupervisorTest(unittest.TestCase):
         # Go to view
         # Then new variable is shown
 
-        # Widget in mimic window should have options to add/remove/reorder vars
+        # Mimic window should have options to add/remove/reorder vars
 
         # Then default mimic page is shown and following elements appears in the content:
         self.fail('Finish this test!')
