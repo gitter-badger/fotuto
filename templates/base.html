@@ -15,6 +15,13 @@
 
 <div id="welcome">Welcome Elpidio</div>
 <h1 id="header_text">{% block header_text %}Home{% endblock %}</h1>
+
+<div id="breadcrumbs">
+	<ol class="breadcrumb">
+		<li><a href="#">Home</a></li>
+		{% block breadcrums %}{% endblock %}
+	</ol>
+</div>
 {% block content %}{% endblock %}
 </body>
 </html>

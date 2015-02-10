@@ -3,7 +3,7 @@ from django.db import models
 
 class Device(models.Model):
     name = models.CharField(max_length=20)
-    slug = models.SlugField(max_length=25, unique=True)
+    slug = models.SlugField(max_length=25, unique=True)  # TODO: Generate automatically
     active = models.BooleanField(default=True)
     model = models.CharField(max_length=10)
     address = models.CharField(max_length=16)
@@ -16,7 +16,7 @@ class Var(models.Model):
         ('real', "Real"),
     )
     name = models.CharField(max_length=20)
-    slug = models.SlugField(max_length=25, unique=True)
+    slug = models.SlugField(max_length=25, unique=True)  # TODO: Generate automatically
     active = models.BooleanField(default=True)
     device = models.ForeignKey(Device, related_name="vars")
     var_type = models.CharField("Type", max_length=10, choices=TYPE_CHOCES)
