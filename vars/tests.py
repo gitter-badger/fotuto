@@ -2,9 +2,26 @@ from django.core.urlresolvers import resolve
 from django.http import HttpRequest
 from django.template.loader import render_to_string
 from django.test import TestCase
-from vars.forms import VarForm
+from django.views.generic import CreateView
+from vars.forms import VarForm, DeviceForm
 from vars.models import Device, Var
 from vars.views import VarCreateView
+
+
+class AddDeviceTest(TestCase):
+    def test_add_url_resolves_to_create_view(self):
+        found = resolve('/devices/add/')
+        self.assertTrue(found.func, CreateView)
+
+    def test_add_returns_correct_html(self):
+        request = HttpRequest()
+        request.method = 'GET'
+        generic_add_device_view = CreateView(model=Device)
+        generic_add_device_view.request = request
+        response = generic_add_device_view.dispatch(request)
+        self.assertEqual(response.status_code, 200)
+        expected_html = render_to_string('vars/device_form.html', {'form': DeviceForm()})
+        self.assertMultiLineEqual(response.rendered_content.decode(), expected_html)
 
 
 class AddVarTest(TestCase):
@@ -17,6 +34,12 @@ class AddVarTest(TestCase):
     def test_add_url_resolves_to_create_view(self):
         found = resolve('/vars/add/')
         self.assertTrue(found.func, VarCreateView)
+
+    def test_add_var_require_device(self):
+        # Remove all devices
+        Device.objects.all().delete()
+        response = self.client.get('/vars/add/')
+        self.assertRedirects(response, '/devices/add/')
 
     def test_add_var_returns_correct_html(self):
         request = HttpRequest()
@@ -36,7 +59,6 @@ class AddVarTest(TestCase):
 
     def test_add_var_page_redirects_after_POST(self):
         response = self.client.post('/vars/add/', data={'name': 'Var 1 name', 'device': self.device.pk})
-        self.assertEqual(response.status_code, 302)
         self.assertRedirects(response, '/vars/list/')
 
     def test_autogenerate_slug_field(self):
