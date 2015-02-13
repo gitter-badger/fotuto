@@ -27,9 +27,7 @@ class UsersTest(LiveServerTestCase):
         # Then default mimic page is shown
 
         # Page title and header mention "Mimics"
-        self.assertIn("Mimics", self.browser.title)
-        header_text = self.browser.find_element_by_id('header_text').text
-        self.assertIn("Mimics", header_text)
+        self.check_page_title_and_header(title="Mimics", header="Mimics")
 
         # A welcome message and the operator's name
         welcome_text = self.browser.find_element_by_id('welcome').text
@@ -81,10 +79,11 @@ class UsersTest(LiveServerTestCase):
         # Operator type his credential and proceed to log-in
         # TODO: Test login form
 
+        # Since there is not devices to attach the variable it is redirected to add a device
+        self.check_page_title_and_header(title="Add Device", header="Add Device")
+
         # Operator is redirected to add var page
-        self.assertIn("Add Variable", self.browser.title)
-        header_text = self.browser.find_element_by_id('header_text').text
-        self.assertIn("Add Variable", header_text)
+        self.check_page_title_and_header(title="Add Device", header="Add Variable")
 
         # Breadcrumbs (Home > Mimics > Variable > Add new)
         breadcrumbs_item = self.browser.find_element_by_class_name('breadcrumb')
@@ -93,6 +92,7 @@ class UsersTest(LiveServerTestCase):
         breadcrumb_current_text = breadcrumbs_item.find_element_by_css_selector('li.active').text
         self.assertEqual("Add new", breadcrumb_current_text)
 
+        # TODO: Pass following areas that an operator can view to other test
         # Operator have more options to customize the scada:
         # Menus:
         # * Mimics -> Add -> Window
@@ -120,7 +120,12 @@ class UsersTest(LiveServerTestCase):
         btn_submit = self.browser.find_element_by_css_selector('.btn-primary')
         btn_submit.click()
 
-        # It is redirected to vars list
+        # It is redirected to var list
+        # Confirmation message is shown
+        var_added_confirmation = self.browser.find_element_by_class_name('.alert')
+        self.assertIn('alert-success', var_added_confirmation.get_attribute('class'))
+        self.assertIn("variable was added", var_added_confirmation.text)
+
         # In the list appears new var added
         table = self.browser.find_element_by_class_name('table')
         rows = table.find_elements_by_tag_name('tr')
@@ -135,3 +140,18 @@ class UsersTest(LiveServerTestCase):
 
         # Then default mimic page is shown and following elements appears in the content:
         self.fail('Finish this test!')
+
+    def check_page_title_and_header(self, url=None, title=None, header=None):
+        """Checks if a page have specified title and header.
+        :param url: Relative path to page, with start and end sash if None use current page (default None)
+        :param title: Text in browser title (default: None)
+        :param header: Text in main page heading (default: None)
+        """
+        if url is not None:
+            self.browser.get('%s%s' % (self.live_server_url, url))
+        if title is not None:
+            self.assertIn(title, self.browser.title)
+
+        header_text = self.browser.find_element_by_id('header_text').text
+        if header is not None:
+            self.assertIn(header, header_text)
