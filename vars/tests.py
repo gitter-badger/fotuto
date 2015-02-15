@@ -1,6 +1,5 @@
 from django.core.exceptions import ValidationError
 from django.core.urlresolvers import resolve
-from django.db import IntegrityError
 from django.http import HttpRequest
 from django.template.loader import render_to_string
 from django.test import TestCase
@@ -8,6 +7,69 @@ from django.views.generic import CreateView
 from vars.forms import VarForm, DeviceForm
 from vars.models import Device, Var
 from vars.views import VarCreateView
+
+
+class ModelTestHelper(TestCase):
+    """Abstract class with helper methods for models."""
+
+    def check_save_validation(self, model, field_name, error_key='blank'):
+        """
+        Checks for raise Empty field Validation exception on save model.
+
+        :param model: Model to save
+        :param field_name: Model attribute to check empty
+        :param error_key: Key in error message
+        """
+        if error_key == 'unique':
+            exception_message = "{'%s': [u'%s with this %s already exists.']}" % (
+                field_name, model.__class__.__name__, field_name.capitalize()
+            )
+        else:
+            exception_message = "{'%s': [u'This field cannot be %s.']}" % (field_name, error_key)
+        with self.assertRaisesMessage(ValidationError, exception_message):
+            model.full_clean()
+            model.save()
+
+
+class DeviceModelTest(ModelTestHelper):
+    def test_saving_and_retrieving_devices(self):
+        Device.objects.create(name="First Device Name", slug="dev1", address='1')
+        Device.objects.create(name="Second Device Name", slug="dev2", address='2')
+
+        # FIXME: address is required and must be unique
+
+        saved_device = Device.objects.all()
+        self.assertEqual(saved_device.count(), 2)
+
+        first_saved_device = saved_device[0]
+        second_saved_device = saved_device[1]
+        self.assertEqual(first_saved_device.name, "First Device Name")
+        self.assertEqual(second_saved_device.name, "Second Device Name")
+
+    def test_require_name(self):
+        device = Device(name="", slug='dev1', address='1')
+        self.check_save_validation(device, 'name')
+
+    def test_require_slug(self):
+        device = Device(name="First Device Name", address='123')
+        self.check_save_validation(device, 'slug')
+
+    def test_unique_slug(self):
+        device1 = Device(name="First Device Name", slug='dev1', address='1')
+        device1.save()
+        device2 = Device(name="Second Device Name", slug='dev1', address='2')
+        self.check_save_validation(device2, 'slug', 'unique')
+
+    def test_require_address(self):
+        device = Device(name="First Device Name", slug="dev1")
+        self.check_save_validation(device, 'address')
+
+    def test_unique_address(self):
+        device1 = Device(name="First Device Name", slug="dev1", address='123')
+        device1.save()
+        self.assertEqual(Device.objects.count(), 1)
+        device2 = Device(name="Second Device Name", slug="dev2", address='123')
+        self.check_save_validation(device2, 'address', 'unique')
 
 
 class DeviceAddTest(TestCase):
@@ -56,10 +118,45 @@ class DeviceAddTest(TestCase):
 
 
 class DeviceListTest(TestCase):
-
     def test_list_url_resolves_to_list_view(self):
         found = resolve('/devices/')
         self.assertEqual(found.func.func_name, 'ListView')
+
+
+class VarModelTest(ModelTestHelper):
+    def setUp(self):
+        # Var require a device
+        self.device, create = Device.objects.get_or_create(name="Device 1", slug="device-1", model="111", address="123")
+
+    def test_saving_and_retrieving_vars(self):
+        Var.objects.create(name="First Var Name", slug="var1", device=self.device)
+        Var.objects.create(name="Second Var Name", slug="var2", device=self.device)
+
+        saved_vars = Var.objects.all()
+        self.assertEqual(saved_vars.count(), 2)
+
+        first_saved_var = saved_vars[0]
+        second_saved_var = saved_vars[1]
+        self.assertEqual(first_saved_var.name, "First Var Name")
+        self.assertEqual(second_saved_var.name, "Second Var Name")
+
+    def test_require_name(self):
+        var = Var(name="", slug='var1', device=self.device)
+        self.check_save_validation(var, 'name')
+
+    def test_require_slug(self):
+        var = Var(name="Var Name", device=self.device)
+        self.check_save_validation(var, 'slug')
+
+    def test_unique_slug(self):
+        var1 = Var(name="First Var Name", slug='var', device=self.device)
+        var1.save()
+        var2 = Var(name="Second Var Name", slug='var', device=self.device)
+        self.check_save_validation(var2, 'slug', 'unique')
+
+    def test_require_device(self):
+        var = Var(name="Var Name", slug='var1')
+        self.check_save_validation(var, 'device', 'null')
 
 
 class VarAddTest(TestCase):
@@ -121,93 +218,7 @@ class VarAddTest(TestCase):
         return var_form.save()
 
 
-class VarModelTest(TestCase):
-
-    def setUp(self):
-        # Var require a device
-        self.device, create = Device.objects.get_or_create(name="Device 1", slug="device-1", model="111", address="123")
-
-    def test_saving_and_retrieving_vars(self):
-        Var.objects.create(name="First Var Name", slug="var1", device=self.device)
-        Var.objects.create(name="Second Var Name", slug="var2", device=self.device)
-
-        saved_vars = Var.objects.all()
-        self.assertEqual(saved_vars.count(), 2)
-
-        first_saved_var = saved_vars[0]
-        second_saved_var = saved_vars[1]
-        self.assertEqual(first_saved_var.name, "First Var Name")
-        self.assertEqual(second_saved_var.name, "Second Var Name")
-
-
-class DeviceModelTest(TestCase):
-
-    def test_saving_and_retrieving_devices(self):
-        Device.objects.create(name="First Device Name", slug="dev1", address='1')
-        Device.objects.create(name="Second Device Name", slug="dev2", address='2')
-
-        # FIXME: address is required and must be unique
-
-        saved_device = Device.objects.all()
-        self.assertEqual(saved_device.count(), 2)
-
-        first_saved_device = saved_device[0]
-        second_saved_device = saved_device[1]
-        self.assertEqual(first_saved_device.name, "First Device Name")
-        self.assertEqual(second_saved_device.name, "Second Device Name")
-
-    def test_required_slug(self):
-        device = Device(name="First Device Name", address='123')
-        self.check_save_validation(device, 'slug')
-
-    def test_required_name(self):
-        device = Device(name="", slug='dev1', address='123')
-        self.check_save_validation(device, 'name')
-
-    def test_unique_slug(self):
-        device1 = Device(name="First Device Name", slug='dev1', address='123')
-        device1.save()
-        device2 = Device(name="Second Device Name", slug='dev1', address='123')
-        self.check_save_integrity(device2, 'slug')
-
-    def test_required_address(self):
-        device = Device(name="First Device Name", slug="dev1")
-        self.check_save_validation(device, 'address')
-
-    def test_unique_address(self):
-        device1 = Device(name="First Device Name", slug="dev1", address='123')
-        device1.save()
-        self.assertEqual(Device.objects.count(), 1)
-        device2 = Device(name="Second Device Name", slug="dev2", address='123')
-        self.check_save_integrity(device2, 'address')
-
-    def check_save_validation(self, model, field_name):
-        """
-        Checks for raise Empty field Validation exception on save model.
-
-        :param model: Model to save
-        :param field_name: Model attribute to check empty
-        """
-        exception_message = "{'%s': [u'This field cannot be blank.']}" % field_name
-        with self.assertRaisesMessage(ValidationError, exception_message):
-            model.save()
-            model.full_clean()
-
-    def check_save_integrity(self, model, field_name):
-        """
-        Checks for raise Unique Integrity exception on save model.
-
-        :param model: Model to save
-        :param field_name: Model attribute to check Uniqueness
-        """
-        exception_message = "UNIQUE constraint failed: vars_device.%s" % field_name
-        with self.assertRaisesMessage(IntegrityError, exception_message):
-            model.save()
-            model.full_clean()
-
-
 class VarListTest(TestCase):
-
     def test_list_url_resolves_to_list_view(self):
         found = resolve('/vars/')
         self.assertEqual(found.func.func_name, 'ListView')
