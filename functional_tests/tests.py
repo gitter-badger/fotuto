@@ -1,5 +1,6 @@
 from django.test import LiveServerTestCase
 from selenium import webdriver
+from selenium.webdriver.common.keys import Keys
 
 
 class UsersTest(LiveServerTestCase):
@@ -79,11 +80,27 @@ class UsersTest(LiveServerTestCase):
         # Operator type his credential and proceed to log-in
         # TODO: Test login form
 
-        # Since there is not devices to attach the variable it is redirected to add a device
-        # He notes enter device first notification
-        self.check_notification_message("Please, add a device first", 'info')
+        # TODO: Check operator menu
+        # Operator have more options to customize the scada:
+        # Menus:
+        # * Mimics -> Add -> Window
+        # * Mimics -> Add -> Device
+        # * Mimics -> Add -> Var
+        # * Mimics -> Add -> Mimic
+        # * Mimics -> Manage -> Windows
+        # * Mimics -> Manage -> Devices
+        # * Mimics -> Manage -> Vars
+        # * Mimics -> Manage -> Mimic
+        # * History -> Add -> Chart
+        # * History -> Manage -> Charts
+
+        # Since there is not devices to attach a variable it is redirected to add a device
         # He notes Add Device page
         self.check_page_title_and_header(title="Add Device", header="Add Device")
+        # He notice breadcrumbs (devices > add new)
+        self.check_breadcrumbs((("Devices", '/devices/'), ("Add new",)))
+        # He notes enter device first notification
+        self.check_notification_message("Please, add a device first", 'info')
 
         # Enter device data
         device_name = 'Router'
@@ -105,36 +122,17 @@ class UsersTest(LiveServerTestCase):
         self.browser.get('%s/vars/add/' % self.live_server_url)
         self.check_page_title_and_header(title="Add Variable", header="Add Variable")
 
-        # Breadcrumbs (Home > Mimics > Variable > Add new)
-        breadcrumbs_item = self.browser.find_element_by_class_name('breadcrumb')
-        breadcrumb_vars = breadcrumbs_item.find_element_by_link_text('Variables')
-        self.assertTrue(breadcrumb_vars.get_attribute('href').endswith('/vars/'))
-        breadcrumb_current_text = breadcrumbs_item.find_element_by_css_selector('li.active').text
-        self.assertEqual("Add new", breadcrumb_current_text)
-
-        # TODO: Pass following areas that an operator can view to other test
-        # Operator have more options to customize the scada:
-        # Menus:
-        # * Mimics -> Add -> Window
-        # * Mimics -> Add -> Device
-        # * Mimics -> Add -> Var
-        # * Mimics -> Add -> Mimic
-        # * Mimics -> Manage -> Windows
-        # * Mimics -> Manage -> Devices
-        # * Mimics -> Manage -> Vars
-        # * Mimics -> Manage -> Mimic
-        # * History -> Add -> Chart
-        # * History -> Manage -> Charts
+        # He notice breadcrumbs (vars > add new)
+        self.check_breadcrumbs((("Variables", '/vars/'), ("Add new",)))
 
         # Enter variable data
         var_name = 'Low Battery'
         input_name = self.browser.find_element_by_id('id_name')
         # TODO: self.assertEqual(input_name.get_attribute('placeholder'), 'Name of the variable')
         input_name.send_keys(var_name)
-        select_type = self.browser.find_element_by_id('id_var_type')
-        # TODO: check value is boolean
+        # Select device
         select_device = self.browser.find_element_by_id('id_device')
-        # TODO: check value is a valid device
+        select_device.send_keys(Keys.ARROW_DOWN)
 
         # Submit form to add var
         btn_submit = self.browser.find_element_by_css_selector('.btn-primary')
@@ -175,6 +173,30 @@ class UsersTest(LiveServerTestCase):
             self.assertIn(header, header_text)
 
     def check_notification_message(self, message, tag='success'):
+        """
+        Checks for a notification message in page.
+
+        :param message: Text in message
+        :param tag: Message tag level in lowercase (default: success)
+        """
         var_added_confirmation = self.browser.find_element_by_class_name('alert')
         self.assertIn('alert-%s' % tag, var_added_confirmation.get_attribute('class'))
         self.assertIn(message, var_added_confirmation.text)
+
+    def check_breadcrumbs(self, items):
+        """
+        Check for breadcrumbs in current page.
+
+        :param items: list of tuple for items in breadcrumb, each tuple contain:
+            0: Visible text displayed
+            1: url: Last portion of url (empty for current active item)
+        """
+        breadcrumbs = self.browser.find_element_by_class_name('breadcrumb')
+        # TODO: Check breadcrumb items order
+        for item in items:
+            if len(item) > 1:  # Has url
+                breadcrumb_item = breadcrumbs.find_element_by_link_text(item[0])
+                self.assertTrue(breadcrumb_item.get_attribute('href').endswith(item[1]))
+            else:
+                breadcrumb_item_text = breadcrumbs.find_element_by_css_selector('li.active').text
+                self.assertEqual(breadcrumb_item_text, item[0])

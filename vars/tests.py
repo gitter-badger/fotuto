@@ -225,6 +225,18 @@ class VarAddTest(TestCase):
         response = self.client.post('/vars/add/', data={'name': 'Var 1 name', 'device': self.device.pk})
         self.assertRedirects(response, '/vars/')
 
+    def test_add_var_message(self):
+        response = self.client.post('/vars/add/', data={'name': 'Var 1 name', 'device': self.device.pk})
+        messages_list = list(messages.get_messages(response.wsgi_request))
+        self.assertEqual(len(messages_list), 1)
+        self.assertEqual(messages_list[0].level_tag, 'success')
+        self.assertIn(messages_list[0].message, 'Variable was added.')
+
+    def test_add_var_print_message(self):
+        response = self.client.post('/vars/add/', data={'name': 'Var 1 name', 'device': self.device.pk})
+        response_redirected = self.client.get(response.url)
+        self.assertIn('Variable was added.', response_redirected.rendered_content)
+
     def test_autogenerate_slug_field(self):
         var = self.save_var_form(name="Some Var Name")
         self.assertEqual(var.slug, 'some-var-name')

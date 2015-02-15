@@ -14,11 +14,12 @@ class DeviceCreateView(SuccessMessageMixin, CreateView):
     success_message = "Device was added."
 
 
-class VarCreateView(CreateView):
+class VarCreateView(SuccessMessageMixin, CreateView):
     """Add new var"""
     model = Var
     form_class = VarForm
     success_url = reverse_lazy('var_list')
+    success_message = "Variable was added."
 
     def dispatch(self, request, *args, **kwargs):
         if Device.objects.count() == 0:
