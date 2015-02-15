@@ -80,10 +80,29 @@ class UsersTest(LiveServerTestCase):
         # TODO: Test login form
 
         # Since there is not devices to attach the variable it is redirected to add a device
+        # He notes enter device first notification
+        device_required_notification = self.browser.find_element_by_class_name('alert')
+        self.assertIn('alert-info', device_required_notification.get_attribute('class'))
+        self.assertIn("Please, add a device first.", device_required_notification.text)
+        # He notes Add Device page
         self.check_page_title_and_header(title="Add Device", header="Add Device")
 
-        # Operator is redirected to add var page
-        self.check_page_title_and_header(title="Add Device", header="Add Variable")
+        # Enter device data
+        device_name = 'Router'
+        input_name = self.browser.find_element_by_id('id_name')
+        # TODO: self.assertEqual(input_name.get_attribute('placeholder'), 'Name of the Device')
+        input_name.send_keys(device_name)
+        input_name = self.browser.find_element_by_id('id_address')
+        input_name.send_keys('1234')
+
+        # Submit form to add device
+        btn_submit = self.browser.find_element_by_css_selector('.btn-primary')
+        btn_submit.click()
+
+        # Operator goes to add var page
+        # TODO: Use menu to find link?
+        self.browser.get('%s/vars/add/' % self.live_server_url)
+        self.check_page_title_and_header(title="Add Variable", header="Add Variable")
 
         # Breadcrumbs (Home > Mimics > Variable > Add new)
         breadcrumbs_item = self.browser.find_element_by_class_name('breadcrumb')
@@ -122,7 +141,7 @@ class UsersTest(LiveServerTestCase):
 
         # It is redirected to var list
         # Confirmation message is shown
-        var_added_confirmation = self.browser.find_element_by_class_name('.alert')
+        var_added_confirmation = self.browser.find_element_by_class_name('alert')
         self.assertIn('alert-success', var_added_confirmation.get_attribute('class'))
         self.assertIn("variable was added", var_added_confirmation.text)
 

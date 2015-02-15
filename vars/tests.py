@@ -1,3 +1,4 @@
+from django.contrib import messages
 from django.core.exceptions import ValidationError
 from django.core.urlresolvers import resolve
 from django.http import HttpRequest
@@ -170,11 +171,27 @@ class VarAddTest(TestCase):
         found = resolve('/vars/add/')
         self.assertTrue(found.func, VarCreateView)
 
-    def test_add_var_require_device(self):
+    def test_add_var_require_device_create_message(self):
+        # Remove all devices
+        Device.objects.all().delete()
+        response = self.client.get('/vars/add/')
+        messages_list = list(messages.get_messages(response.wsgi_request))
+        self.assertEqual(len(messages_list), 1)
+        self.assertEqual(messages_list[0].level_tag, 'info')
+        self.assertIn(messages_list[0].message, 'Please, add a device first.')
+
+    def test_add_var_require_device_redirect(self):
         # Remove all devices
         Device.objects.all().delete()
         response = self.client.get('/vars/add/')
         self.assertRedirects(response, '/devices/add/')
+
+    def test_add_var_require_device_print_message(self):
+        # Remove all devices
+        Device.objects.all().delete()
+        response = self.client.get('/vars/add/')
+        response_redirected = self.client.get(response.url)
+        self.assertIn('Please, add a device first.', response_redirected.rendered_content)
 
     def test_add_var_returns_correct_html(self):
         request = HttpRequest()
