@@ -1,4 +1,6 @@
+from django.core.exceptions import ValidationError
 from django.core.urlresolvers import resolve
+from django.db import IntegrityError
 from django.http import HttpRequest
 from django.template.loader import render_to_string
 from django.test import TestCase
@@ -40,11 +42,11 @@ class DeviceAddTest(TestCase):
     def test_autogenerate_slug_field_must_be_unique(self):
         device_name = "Unique name"
 
-        device1 = self.save_device_form(name=device_name, address='1234')
-        device2 = self.save_device_form(name=device_name, address='1234')
+        device1 = self.save_device_form(name=device_name, address='1')
+        device2 = self.save_device_form(name=device_name, address='2')
         self.assertEqual(device2.slug, '%s-%s' % (device1.slug, device2.pk - 1))
 
-        device3 = self.save_device_form(name=device_name, address='1234')
+        device3 = self.save_device_form(name=device_name, address='3')
         self.assertEqual(device3.slug, '%s-%s' % (device1.slug, device3.pk - 1))
 
     def save_device_form(self, **device_data):
@@ -141,8 +143,8 @@ class VarModelTest(TestCase):
 class DeviceModelTest(TestCase):
 
     def test_saving_and_retrieving_devices(self):
-        Device.objects.create(name="First Device Name", slug="dev1")
-        Device.objects.create(name="Second Device Name", slug="dev2")
+        Device.objects.create(name="First Device Name", slug="dev1", address='1')
+        Device.objects.create(name="Second Device Name", slug="dev2", address='2')
 
         # FIXME: address is required and must be unique
 
@@ -153,6 +155,21 @@ class DeviceModelTest(TestCase):
         second_saved_device = saved_device[1]
         self.assertEqual(first_saved_device.name, "First Device Name")
         self.assertEqual(second_saved_device.name, "Second Device Name")
+
+    def test_unique_address(self):
+        device1 = Device(name="First First Name", slug="dev1", address='123')
+        device1.save()
+        self.assertEqual(Device.objects.count(), 1)
+        device2 = Device(name="First Second Name", slug="dev2", address='123')
+        with self.assertRaises(IntegrityError):
+            device2.save()
+            device2.full_clean()
+
+    def test_required_address(self):
+        device = Device(name="First Device Name", slug="dev1")
+        with self.assertRaises(ValidationError):
+            device.save()
+            device.full_clean()
 
 
 class VarListTest(TestCase):

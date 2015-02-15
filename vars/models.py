@@ -8,7 +8,7 @@ class Device(models.Model):
     )
     active = models.BooleanField(default=True)
     model = models.CharField(max_length=10, blank=True)
-    address = models.CharField(max_length=16)
+    address = models.CharField(max_length=16, unique=True)
     description = models.CharField(max_length=255, blank=True)
 
 
