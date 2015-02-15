@@ -260,6 +260,21 @@ class VarAddTest(TestCase):
 
 
 class VarListTest(TestCase):
+    def setUp(self):
+        # Var require a device
+        self.device, create = Device.objects.get_or_create(name="Device 1", slug="device-1", model="111", address="123")
+
     def test_list_url_resolves_to_list_view(self):
         found = resolve('/vars/')
         self.assertEqual(found.func.func_name, 'ListView')
+
+    def test_uses_template(self):
+        response = self.client.get('/vars/')
+        self.assertTemplateUsed(response, 'vars/var_list.html')
+
+    def test_displays_all_vars(self):
+        Var.objects.create(name="First Var Name", slug="var1", device=self.device)
+        Var.objects.create(name="Second Var Name", slug="var2", device=self.device)
+        response = self.client.get('/vars/')
+        self.assertContains(response, "First Var Name")
+        self.assertContains(response, "Second Var Name")

@@ -146,7 +146,7 @@ class UsersTest(LiveServerTestCase):
         table = self.browser.find_element_by_class_name('table')
         rows = table.find_elements_by_tag_name('tr')
         self.assertTrue(
-            any('var_name' in row.text for row in rows)
+            any(var_name in row.text for row in rows)
         )
         # Add new added variable to default view
         # Go to view
