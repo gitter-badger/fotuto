@@ -1,0 +1,18 @@
+{% extends 'base.html' %}
+
+{% block title %}Add Device{% endblock %}
+
+{% block header_text %}Add Devie{% endblock %}
+
+{% block breadcrums %}
+	<li><a href="{% url 'device_list' %}">Devices</a></li>
+	<li class="active">Add new</li>
+{% endblock %}
+
+{% block content %}
+	<form method="post" action="">
+		{% csrf_token %}
+		{{ form.as_p }}
+		<input type="submit" class="btn btn-primary" value="Save"/>
+	</form>
+{% endblock %}
