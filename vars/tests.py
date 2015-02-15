@@ -2,13 +2,13 @@ from django.core.urlresolvers import resolve
 from django.http import HttpRequest
 from django.template.loader import render_to_string
 from django.test import TestCase
-from django.views.generic import CreateView, ListView
+from django.views.generic import CreateView
 from vars.forms import VarForm, DeviceForm
 from vars.models import Device, Var
 from vars.views import VarCreateView
 
 
-class AddDeviceTest(TestCase):
+class DeviceAddTest(TestCase):
     def test_add_url_resolves_to_create_view(self):
         found = resolve('/devices/add/')
         self.assertTrue(found.func, CreateView)
@@ -57,7 +57,7 @@ class DeviceListTest(TestCase):
 
     def test_list_url_resolves_to_list_view(self):
         found = resolve('/devices/')
-        self.assertTrue(found.func, ListView)
+        self.assertEqual(found.func.func_name, 'ListView')
 
 
 class VarAddTest(TestCase):
@@ -153,3 +153,10 @@ class DeviceModelTest(TestCase):
         second_saved_device = saved_device[1]
         self.assertEqual(first_saved_device.name, "First Device Name")
         self.assertEqual(second_saved_device.name, "Second Device Name")
+
+
+class VarListTest(TestCase):
+
+    def test_list_url_resolves_to_list_view(self):
+        found = resolve('/vars/')
+        self.assertEqual(found.func.func_name, 'ListView')
