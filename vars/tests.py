@@ -94,9 +94,21 @@ class DeviceAddTest(TestCase):
         new_device = Device.objects.first()
         self.assertEqual(new_device.name, 'Device 1 name')
 
+    def test_add_device_message(self):
+        response = self.client.post('/devices/add/', data={'name': 'Device 1 name', 'address': '1234'})
+        messages_list = list(messages.get_messages(response.wsgi_request))
+        self.assertEqual(len(messages_list), 1)
+        self.assertEqual(messages_list[0].level_tag, 'success')
+        self.assertIn(messages_list[0].message, 'Device was added.')
+
     def test_add_device_page_redirects_after_POST(self):
         response = self.client.post('/devices/add/', data={'name': 'Device 1 name', 'address': '1234'})
         self.assertRedirects(response, '/devices/')
+
+    def test_add_device_print_message(self):
+        response = self.client.post('/devices/add/', data={'name': 'Device 1 name', 'address': '1234'})
+        response_redirected = self.client.get(response.url)
+        self.assertIn('Device was added.', response_redirected.rendered_content)
 
     def test_autogenerate_slug_field(self):
         device = self.save_device_form(name="Some Device Name", address='1234')

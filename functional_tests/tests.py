@@ -81,9 +81,7 @@ class UsersTest(LiveServerTestCase):
 
         # Since there is not devices to attach the variable it is redirected to add a device
         # He notes enter device first notification
-        device_required_notification = self.browser.find_element_by_class_name('alert')
-        self.assertIn('alert-info', device_required_notification.get_attribute('class'))
-        self.assertIn("Please, add a device first.", device_required_notification.text)
+        self.check_notification_message("Please, add a device first", 'info')
         # He notes Add Device page
         self.check_page_title_and_header(title="Add Device", header="Add Device")
 
@@ -98,6 +96,9 @@ class UsersTest(LiveServerTestCase):
         # Submit form to add device
         btn_submit = self.browser.find_element_by_css_selector('.btn-primary')
         btn_submit.click()
+
+        # He notice the added device confirmation message
+        self.check_notification_message("Device was added")
 
         # Operator goes to add var page
         # TODO: Use menu to find link?
@@ -141,9 +142,7 @@ class UsersTest(LiveServerTestCase):
 
         # It is redirected to var list
         # Confirmation message is shown
-        var_added_confirmation = self.browser.find_element_by_class_name('alert')
-        self.assertIn('alert-success', var_added_confirmation.get_attribute('class'))
-        self.assertIn("variable was added", var_added_confirmation.text)
+        self.check_notification_message("Variable was added")
 
         # In the list appears new var added
         table = self.browser.find_element_by_class_name('table')
@@ -174,3 +173,8 @@ class UsersTest(LiveServerTestCase):
         header_text = self.browser.find_element_by_id('header_text').text
         if header is not None:
             self.assertIn(header, header_text)
+
+    def check_notification_message(self, message, tag='success'):
+        var_added_confirmation = self.browser.find_element_by_class_name('alert')
+        self.assertIn('alert-%s' % tag, var_added_confirmation.get_attribute('class'))
+        self.assertIn(message, var_added_confirmation.text)

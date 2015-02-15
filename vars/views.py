@@ -1,9 +1,17 @@
 from django import http
 from django.contrib import messages
+from django.contrib.messages.views import SuccessMessageMixin
 from django.core.urlresolvers import reverse_lazy, reverse
 from django.views.generic import CreateView
-from vars.forms import VarForm
+from vars.forms import VarForm, DeviceForm
 from vars.models import Var, Device
+
+
+class DeviceCreateView(SuccessMessageMixin, CreateView):
+    model = Device
+    form_class = DeviceForm
+    success_url = reverse_lazy('device_list')
+    success_message = "Device was added."
 
 
 class VarCreateView(CreateView):

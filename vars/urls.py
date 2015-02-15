@@ -1,14 +1,12 @@
 from django.conf.urls import patterns, include, url
-from django.core.urlresolvers import reverse_lazy
-from django.views.generic import CreateView, ListView
-from vars.forms import DeviceForm
+from django.views.generic import ListView
 from vars.models import Device, Var
-from vars.views import VarCreateView
+from vars.views import VarCreateView, DeviceCreateView
 
 urlpatterns = patterns('',
     url(r'^vars/add/$', VarCreateView.as_view(), name="var_add"),
     url(r'^vars/$', ListView.as_view(model=Var), name="var_list"),
 
-    url(r'^devices/add/$', CreateView.as_view(model=Device, form_class=DeviceForm, success_url=reverse_lazy('device_list')), name="device_add"),
+    url(r'^devices/add/$', DeviceCreateView.as_view(), name="device_add"),
     url(r'^devices/$', ListView.as_view(model=Device), name="device_list"),
 )
