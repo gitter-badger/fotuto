@@ -156,20 +156,54 @@ class DeviceModelTest(TestCase):
         self.assertEqual(first_saved_device.name, "First Device Name")
         self.assertEqual(second_saved_device.name, "Second Device Name")
 
-    def test_unique_address(self):
-        device1 = Device(name="First First Name", slug="dev1", address='123')
+    def test_required_slug(self):
+        device = Device(name="First Device Name", address='123')
+        self.check_save_validation(device, 'slug')
+
+    def test_required_name(self):
+        device = Device(name="", slug='dev1', address='123')
+        self.check_save_validation(device, 'name')
+
+    def test_unique_slug(self):
+        device1 = Device(name="First Device Name", slug='dev1', address='123')
         device1.save()
-        self.assertEqual(Device.objects.count(), 1)
-        device2 = Device(name="First Second Name", slug="dev2", address='123')
-        with self.assertRaises(IntegrityError):
-            device2.save()
-            device2.full_clean()
+        device2 = Device(name="Second Device Name", slug='dev1', address='123')
+        self.check_save_integrity(device2, 'slug')
 
     def test_required_address(self):
         device = Device(name="First Device Name", slug="dev1")
-        with self.assertRaises(ValidationError):
-            device.save()
-            device.full_clean()
+        self.check_save_validation(device, 'address')
+
+    def test_unique_address(self):
+        device1 = Device(name="First Device Name", slug="dev1", address='123')
+        device1.save()
+        self.assertEqual(Device.objects.count(), 1)
+        device2 = Device(name="Second Device Name", slug="dev2", address='123')
+        self.check_save_integrity(device2, 'address')
+
+    def check_save_validation(self, model, field_name):
+        """
+        Checks for raise Empty field Validation exception on save model.
+
+        :param model: Model to save
+        :param field_name: Model attribute to check empty
+        """
+        exception_message = "{'%s': [u'This field cannot be blank.']}" % field_name
+        with self.assertRaisesMessage(ValidationError, exception_message):
+            model.save()
+            model.full_clean()
+
+    def check_save_integrity(self, model, field_name):
+        """
+        Checks for raise Unique Integrity exception on save model.
+
+        :param model: Model to save
+        :param field_name: Model attribute to check Uniqueness
+        """
+        exception_message = "UNIQUE constraint failed: vars_device.%s" % field_name
+        with self.assertRaisesMessage(IntegrityError, exception_message):
+            model.save()
+            model.full_clean()
 
 
 class VarListTest(TestCase):
