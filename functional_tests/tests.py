@@ -72,7 +72,7 @@ class UsersTest(LiveServerTestCase):
         # Then Chart area is shown with new data
         self.fail('Finish the test!')
 
-    def test_operator_can_add_vars_to_view(self):
+    def test_operator_can_add_vars_to_window(self):
         # A operator go to add var page
         self.browser.get('%s/vars/add/' % self.live_server_url)
 
@@ -148,9 +148,25 @@ class UsersTest(LiveServerTestCase):
         self.assertTrue(
             any(var_name in row.text for row in rows)
         )
-        # Add new added variable to default view
-        # Go to view
-        # Then new variable is shown
+
+        # Add new added variable to window
+        # Since a new device with a variable was added, automatically new mimic with var was created
+        # So create new window
+        self.browser.get('%s/windows/add/' % self.live_server_url)
+        self.check_page_title_and_header(title="Add Window", header="Add Window")
+        # He notice breadcrumbs (windows > add new)
+        self.check_breadcrumbs((("Windows", '/windows/'), ("Add new",)))
+
+        # Go to the windows (since this the first view it appears in the homepage)
+        self.browser.get(self.live_server_url)
+        # Then mimic for device with new variable is shown
+        mimic_title = self.browser.find_elements_by_css_selector('.mimic .title')[0].text
+        self.assertEqual(device_name, mimic_title)
+
+        # A variable value indicator and variable's name
+        var_item = self.browser.find_elements_by_css_selector('.mimic .var')[0]
+        self.assertEqual("1", var_item.text)
+        self.assertEqual("Working", var_item.get_attribute('title'))
 
         # Mimic window should have options to add/remove/reorder vars
 

@@ -2,6 +2,7 @@ from django.core.urlresolvers import resolve
 from django.http import HttpRequest
 from django.template.loader import render_to_string
 from django.test import TestCase
+from django.views.generic import CreateView
 from windows.views import WindowDetailView
 
 
@@ -19,3 +20,10 @@ class HomePageTest(TestCase):
         self.assertEqual(response.status_code, 200)
         expected_html = render_to_string('windows/window_detail.html')
         self.assertEqual(response.rendered_content.decode(), expected_html)
+
+
+class WindowAddTest(TestCase):
+
+    def test_add_url_resolves_to_create_view(self):
+        found = resolve('/windows/add/')
+        self.assertTrue(found.func, CreateView)
