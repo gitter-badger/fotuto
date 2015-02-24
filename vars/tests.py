@@ -1,35 +1,13 @@
 from django.contrib import messages
-from django.core.exceptions import ValidationError
 from django.core.urlresolvers import resolve
 from django.http import HttpRequest
 from django.template.loader import render_to_string
 from django.test import TestCase
 from django.views.generic import CreateView
+from fotutils.tests import ModelTestHelper
 from vars.forms import VarForm, DeviceForm
 from vars.models import Device, Var
 from vars.views import VarCreateView
-
-
-class ModelTestHelper(TestCase):
-    """Abstract class with helper methods for models."""
-
-    def check_save_validation(self, model, field_name, error_key='blank'):
-        """
-        Checks for raise Empty field Validation exception on save model.
-
-        :param model: Model to save
-        :param field_name: Model attribute to check empty
-        :param error_key: Key in error message
-        """
-        if error_key == 'unique':
-            exception_message = "{'%s': [u'%s with this %s already exists.']}" % (
-                field_name, model.__class__.__name__, field_name.capitalize()
-            )
-        else:
-            exception_message = "{'%s': [u'This field cannot be %s.']}" % (field_name, error_key)
-        with self.assertRaisesMessage(ValidationError, exception_message):
-            model.full_clean()
-            model.save()
 
 
 class DeviceModelTest(ModelTestHelper):
