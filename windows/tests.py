@@ -3,6 +3,7 @@ from django.http import HttpRequest
 from django.template.loader import render_to_string
 from django.test import TestCase
 from django.views.generic import CreateView
+from fotutils.tests import ModelTestHelper
 from windows.forms import WindowForm
 from windows.models import Window
 from windows.views import WindowDetailView
@@ -24,21 +25,20 @@ class HomePageTest(TestCase):
         self.assertEqual(response.rendered_content.decode(), expected_html)
 
 
-class WindowModelTest(TestCase):
+class WindowModelTest(ModelTestHelper):
 
     # TODO: Inherit from ModelTestHelper
 
     def test_saving_and_retrieving_windows(self):
-        Window.objects.create(title="First Window Title", slug="window1")
-        Window.objects.create(title="Second Window Title", slug="window2")
+        win1 = {'title': "First Window Title", 'slug': 'win1'}
+        win2 = {'title': "Second Window Title", 'slug': 'win2'}
+        self.check_saving_and_retrieving_objects(model=Window, obj1_dict=win1, obj2_dict=win2)
 
-        saved_windows = Window.objects.all()
-        self.assertEqual(saved_windows.count(), 2)
+    def test_require_slug(self):
+        self.check_require_field(model=Window)
 
-        first_saved_window = saved_windows[0]
-        second_saved_window = saved_windows[1]
-        self.assertEqual(first_saved_window.title, "First Window Title")
-        self.assertEqual(second_saved_window.title, "Second Window Title")
+    def test_unique_slug(self):
+        self.check_unique_field(model=Window)
 
 
 class WindowAddTest(TestCase):

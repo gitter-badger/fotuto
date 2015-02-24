@@ -11,44 +11,30 @@ from vars.views import VarCreateView
 
 
 class DeviceModelTest(ModelTestHelper):
+
     def test_saving_and_retrieving_devices(self):
-        Device.objects.create(name="First Device Name", slug="dev1", address='1')
-        Device.objects.create(name="Second Device Name", slug="dev2", address='2')
-
-        # FIXME: address is required and must be unique
-
-        saved_device = Device.objects.all()
-        self.assertEqual(saved_device.count(), 2)
-
-        first_saved_device = saved_device[0]
-        second_saved_device = saved_device[1]
-        self.assertEqual(first_saved_device.name, "First Device Name")
-        self.assertEqual(second_saved_device.name, "Second Device Name")
+        dev1 = {'name': "First Device Name", 'slug': 'dev1', 'address': '1'}
+        dev2 = {'name': "Second Device Name", 'slug': 'dev2', 'address': '2'}
+        self.check_saving_and_retrieving_objects(model=Device, obj1_dict=dev1, obj2_dict=dev2)
 
     def test_require_name(self):
-        device = Device(name="", slug='dev1', address='1')
-        self.check_save_validation(device, 'name')
+        self.check_require_field(model=Device, required_field='name', name="", slug='dev1', address='1')
 
     def test_require_slug(self):
-        device = Device(name="First Device Name", address='123')
-        self.check_save_validation(device, 'slug')
+        self.check_require_field(model=Device, name="First Device Name", address='123')
 
     def test_unique_slug(self):
-        device1 = Device(name="First Device Name", slug='dev1', address='1')
-        device1.save()
-        device2 = Device(name="Second Device Name", slug='dev1', address='2')
-        self.check_save_validation(device2, 'slug', 'unique')
+        dev1 = {'name': "First Device Name", 'address': '1'}
+        dev2 = {'name': "Second Device Name", 'address': '2'}
+        self.check_unique_field(model=Device, obj1_dict=dev1, obj2_dict=dev2)
 
     def test_require_address(self):
-        device = Device(name="First Device Name", slug="dev1")
-        self.check_save_validation(device, 'address')
+        self.check_require_field(model=Device, required_field='address', name="First Device Name", slug='dev1')
 
     def test_unique_address(self):
-        device1 = Device(name="First Device Name", slug="dev1", address='123')
-        device1.save()
-        self.assertEqual(Device.objects.count(), 1)
-        device2 = Device(name="Second Device Name", slug="dev2", address='123')
-        self.check_save_validation(device2, 'address', 'unique')
+        dev1 = {'name': "First Device Name", 'slug': 'dev1'}
+        dev2 = {'name': "Second Device Name", 'slug': 'dev2'}
+        self.check_unique_field(model=Device, unique_field='address', obj1_dict=dev1, obj2_dict=dev2)
 
 
 class DeviceAddTest(TestCase):
@@ -120,34 +106,23 @@ class VarModelTest(ModelTestHelper):
         self.device, create = Device.objects.get_or_create(name="Device 1", slug="device-1", model="111", address="123")
 
     def test_saving_and_retrieving_vars(self):
-        Var.objects.create(name="First Var Name", slug="var1", device=self.device)
-        Var.objects.create(name="Second Var Name", slug="var2", device=self.device)
-
-        saved_vars = Var.objects.all()
-        self.assertEqual(saved_vars.count(), 2)
-
-        first_saved_var = saved_vars[0]
-        second_saved_var = saved_vars[1]
-        self.assertEqual(first_saved_var.name, "First Var Name")
-        self.assertEqual(second_saved_var.name, "Second Var Name")
+        var1 = {'name': "First Var Name", 'slug': 'var1', 'device': self.device}
+        var2 = {'name': "Second Var Name", 'slug': 'var2', 'device': self.device}
+        self.check_saving_and_retrieving_objects(model=Var, obj1_dict=var1, obj2_dict=var2)
 
     def test_require_name(self):
-        var = Var(name="", slug='var1', device=self.device)
-        self.check_save_validation(var, 'name')
+        self.check_require_field(model=Var, required_field='name', name="", slug='var1', device=self.device)
 
     def test_require_slug(self):
-        var = Var(name="Var Name", device=self.device)
-        self.check_save_validation(var, 'slug')
+        self.check_require_field(model=Var, name="Var Name", device=self.device)
 
     def test_unique_slug(self):
-        var1 = Var(name="First Var Name", slug='var', device=self.device)
-        var1.save()
-        var2 = Var(name="Second Var Name", slug='var', device=self.device)
-        self.check_save_validation(var2, 'slug', 'unique')
+        var1 = {'name': "First Var Name", 'device': self.device}
+        var2 = {'name': "Second Var Name", 'device': self.device}
+        self.check_unique_field(model=Var, obj1_dict=var1, obj2_dict=var2)
 
     def test_require_device(self):
-        var = Var(name="Var Name", slug='var1')
-        self.check_save_validation(var, 'device', 'null')
+        self.check_require_field(model=Var, required_field='device', error_key='null', name="Var Name", slug='var1')
 
 
 class VarAddTest(TestCase):
