@@ -15,14 +15,14 @@ class WindowForm(forms.ModelForm):
 
     def clean_slug(self):
         """
-        Auto-generate slug from name if left in blank.
+        Auto-generate slug from title if left in blank.
 
         If slug exist, try by incrementing a suffix.
         """
         # TODO: Refactor this
         data = self.cleaned_data['slug']
         if data == '':
-            data = slugify(self.cleaned_data['name'])
+            data = slugify(self.cleaned_data['title'])
             # Validate unique
             slug_exists_count = self._meta.model.objects.filter(slug__regex=r'^%s(-\d+)?$' % data).count()
             if slug_exists_count:
