@@ -33,6 +33,8 @@ class MimicManagementTest(TestCase):
         self.window, create = Window.objects.get_or_create(slug="win1")
         self.manage_mimic_url = '/windows/%s/mimics/manage/' % self.window.slug
 
+    # TODO: Test add vars in mimic
+
     def test_add_url_resolves_to_create_view(self):
         found = resolve(self.manage_mimic_url)
         self.assertTrue(found.func, MimicManageView)

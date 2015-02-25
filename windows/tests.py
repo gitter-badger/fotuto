@@ -69,8 +69,6 @@ class HomePageTest(TestCase):
 
 class WindowModelTest(ModelTestHelper):
 
-    # TODO: Inherit from ModelTestHelper
-
     def test_saving_and_retrieving_windows(self):
         win1 = {'title': "First Window Title", 'slug': 'win1'}
         win2 = {'title': "Second Window Title", 'slug': 'win2'}

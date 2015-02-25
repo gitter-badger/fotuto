@@ -4,7 +4,7 @@ from windows.models import Window
 
 
 class Mimic(models.Model):
-    """A group of vars in a :class:`~windows.models.Window`."""
+    """A human friendly group of vars in a :class:`~windows.models.Window`."""
     name = models.CharField(max_length=50, blank=True)
     vars = models.ManyToManyField(Var, null=True, blank=True)
     window = models.ForeignKey(Window)
