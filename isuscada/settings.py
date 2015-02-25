@@ -38,6 +38,7 @@ INSTALLED_APPS = (
     'django.contrib.staticfiles',
     'vars',
     'windows',
+    'mimics',
 )
 
 MIDDLEWARE_CLASSES = (
