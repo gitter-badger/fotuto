@@ -1,0 +1,18 @@
+{% extends 'base.html' %}
+
+{% block title %}Add Window{% endblock %}
+
+{% block header_text %}Add Window{% endblock %}
+
+{% block breadcrums %}
+	<li><a href="{% url 'window_list' %}">Windows</a></li>
+	<li class="active">Add new</li>
+{% endblock %}
+
+{% block content %}
+	<form method="post" action="">
+		{% csrf_token %}
+		{{ form.as_p }}
+		<input type="submit" class="btn btn-primary" value="Save"/>
+	</form>
+{% endblock %}
