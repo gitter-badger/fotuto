@@ -157,6 +157,28 @@ class UsersTest(LiveServerTestCase):
         # He notice breadcrumbs (windows > add new)
         self.check_breadcrumbs((("Windows", '/windows/'), ("Add new",)))
 
+        # Enter window data
+        window_title = 'Main window'
+        input_title = self.browser.find_element_by_id('id_title')
+        # TODO: self.assertEqual(input_name.get_attribute('placeholder'), 'Title of the window')
+        input_title.send_keys(window_title)
+
+        # Add mimic to window
+        # Select mimic
+        select_mimic = self.browser.find_element_by_id('id_mimic')
+        select_mimic.send_keys(Keys.ARROW_DOWN)  # There are only one mimic
+        # Do not touch vars since all mimic's vars are selected by default
+        # Left other mimic field with it default values
+        # TODO: Enter position values and check them in window details page
+
+        # Submit form to add window
+        btn_submit = self.browser.find_element_by_css_selector('.btn-primary')
+        btn_submit.click()
+
+        # It is redirected to window details
+        # Confirmation message is shown
+        self.check_notification_message("Window was added")
+
         # Go to the windows (since this the first view it appears in the homepage)
         self.browser.get(self.live_server_url)
         # Then mimic for device with new variable is shown
