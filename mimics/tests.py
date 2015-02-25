@@ -1,5 +1,8 @@
+from django.core.urlresolvers import resolve
+from django.test import TestCase
 from fotutils.tests import ModelTestHelper
 from mimics.models import Mimic
+from mimics.views import MimicManageView
 from windows.models import Window
 
 
@@ -13,3 +16,17 @@ class MimicModelTest(ModelTestHelper):
         mimic2 = {'name': "Second Mimic Name", 'window': self.window}
         # TODO: specify vars
         self.check_saving_and_retrieving_objects(model=Mimic, obj1_dict=mimic1, obj2_dict=mimic2)
+
+    def test_require_window(self):
+        self.check_require_field(model=Mimic, required_field='window', error_key='null')
+
+
+class MimicManagementTest(TestCase):
+
+    def setUp(self):
+        # a window is required for a mimic
+        self.window, create = Window.objects.get_or_create(slug="win1")
+
+    def test_add_url_resolves_to_create_view(self):
+        found = resolve('/windows/%s/mimics/manage/' % self.window.slug)
+        self.assertTrue(found.func, MimicManageView)
