@@ -163,17 +163,36 @@ class UsersTest(LiveServerTestCase):
         # TODO: self.assertEqual(input_name.get_attribute('placeholder'), 'Title of the window')
         input_title.send_keys(window_title)
 
-        # Add mimic to window
-        # Select mimic
-        select_mimic = self.browser.find_element_by_id('id_mimic')
-        select_mimic.send_keys(Keys.ARROW_DOWN)  # There are only one mimic
-        # Do not touch vars since all mimic's vars are selected by default
-        # Left other mimic field with it default values
-        # TODO: Enter position values and check them in window details page
-
         # Submit form to add window
         btn_submit = self.browser.find_element_by_css_selector('.btn-primary')
         btn_submit.click()
+
+        # Now he is in windows list page
+        self.check_page_title_and_header(title="Windows", header="Windows")
+        # He notice breadcrumbs
+        self.check_breadcrumbs((("Windows",),))
+
+        # So click in manage mimics button of a first
+        # FIXME: This flow should be change in favor of a wizard
+        button_manage_mimic = self.browser.find_elements_by_class_name('manage-mimics')[0]
+        button_manage_mimic.click()
+
+        # Now he is in manage mimics for the window page
+        self.check_page_title_and_header(title="Manage Mimics", header="Manage Mimics")
+        # He notice breadcrumbs (windows > Window.Title > Mimics)
+        self.check_breadcrumbs((("Windows", '/windows/'), (window_title, '/window/main-window/details/'), ("Mimics",),))
+
+        # Add mimic to window
+        input_mimic_name = self.browser.find_element_by_id('id_name')
+        input_mimic_name.send_keys("Router")
+        # Left other mimic field with it default values
+        # TODO: Enter position values and check them in window details page
+
+        # Submit form to add mimic to window
+        btn_submit = self.browser.find_element_by_css_selector('.btn-primary')
+        btn_submit.click()
+
+        # Add mimic from device (use name and vars from device)
 
         # It is redirected to window details
         # Confirmation message is shown
