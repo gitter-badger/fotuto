@@ -1,1 +1,16 @@
 {% extends 'base.html' %}
+
+{% block content %}
+    <table class="table">
+        <tr>
+            <th>Title</th>
+            <th>Options</th>
+        </tr>
+        {% for window in window_list %}
+            <tr>
+                <td>{{ window.title }}</td>
+                <td>View Edit <a href="{% url 'mimic_manage' window.slug %}" class="manage-mimics">Mimics</a> Delete</td>
+            </tr>
+        {% endfor %}
+    </table>
+{% endblock %}
