@@ -48,7 +48,8 @@ class MimicManagementTest(TestCase):
         response = generic_add_var_view.dispatch(request)
         self.assertEqual(response.status_code, 200)
         expected_html = render_to_string('mimics/mimic_manage_form.html', {
-            'form': MimicManageForm(initial={'window': self.window.pk})
+            'form': MimicManageForm(initial={'window': self.window.pk}),
+            'window': self.window
         })
         self.assertMultiLineEqual(response.rendered_content.decode(), expected_html)
 

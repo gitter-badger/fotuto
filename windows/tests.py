@@ -34,10 +34,12 @@ class WindowModelTest(ModelTestHelper):
         self.check_saving_and_retrieving_objects(model=Window, obj1_dict=win1, obj2_dict=win2)
 
     def test_require_slug(self):
-        self.check_require_field(model=Window)
+        self.check_require_field(model=Window, title="Some title")
 
     def test_unique_slug(self):
-        self.check_unique_field(model=Window)
+        win1 = {'title': "First Window Title"}
+        win2 = {'title': "Second Window Title"}
+        self.check_unique_field(model=Window, obj1_dict=win1, obj2_dict=win1)
 
 
 class WindowAddTest(TestCase):

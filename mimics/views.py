@@ -22,3 +22,8 @@ class MimicManageView(SuccessMessageMixin, CreateView):
         self.window = get_object_or_404(Window, slug=self.kwargs.get('window'))
         initial['window'] = self.window.pk
         return initial
+
+    def get_context_data(self, **kwargs):
+        context = super(MimicManageView, self).get_context_data(**kwargs)
+        context['window'] = self.window
+        return context
