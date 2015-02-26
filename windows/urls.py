@@ -6,5 +6,6 @@ from windows.views import WindowDetailView, WindowCreateView
 urlpatterns = patterns('',
     url(r'^$', WindowDetailView.as_view(), name="mimics"),
     url(r'^windows/add/$', WindowCreateView.as_view(), name="window_add"),
+    url(r'^windows/(?P<slug>[\w-]+)/$', WindowDetailView.as_view(), name="window_details"),
     url(r'^windows/$', ListView.as_view(model=Window), name="window_list"),
 )

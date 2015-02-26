@@ -180,7 +180,7 @@ class UsersTest(LiveServerTestCase):
         # Now he is in manage mimics for the window page
         self.check_page_title_and_header(title="Manage Mimics", header="Manage Mimics")
         # He notice breadcrumbs (windows > Window.Title > Mimics)
-        self.check_breadcrumbs((("Windows", '/windows/'), (window_title, '/window/main-window/details/'), ("Mimics",),))
+        self.check_breadcrumbs((("Windows", '/windows/'), (window_title, '/windows/main-window/details/'), ("Mimics",),))
 
         # Add mimic to window
         input_mimic_name = self.browser.find_element_by_id('id_name')
@@ -192,11 +192,11 @@ class UsersTest(LiveServerTestCase):
         btn_submit = self.browser.find_element_by_css_selector('.btn-primary')
         btn_submit.click()
 
-        # Add mimic from device (use name and vars from device)
+        # TODO: Add mimic from device (use name and vars from device)
 
         # It is redirected to window details
         # Confirmation message is shown
-        self.check_notification_message("Window was added")
+        self.check_notification_message("Mimic was added")
 
         # Go to the windows (since this the first view it appears in the homepage)
         self.browser.get(self.live_server_url)
