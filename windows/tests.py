@@ -7,15 +7,29 @@ from django.views.generic import CreateView
 from fotutils.tests import ModelTestHelper
 from windows.forms import WindowForm
 from windows.models import Window
-from windows.views import WindowDetailView
+from windows.views import WindowDetailView, WindowDefaultView
 
 
 class HomePageTest(TestCase):
     def test_root_url_resolves_to_homepage_view(self):
         found = resolve('/')
-        self.assertTrue(found.func, WindowDetailView)
+        self.assertTrue(found.func, WindowDefaultView)
 
-    # TODO: Test if show a default view, if no view it should display an intro page to start wizard for add view
+    def test_root_no_window_redirect_to_add_window(self):
+        response = self.client.post('/')
+        self.assertRedirects(response, '/windows/add/')
+
+    def test_root_no_window_message(self):
+        response = self.client.post('/')
+        messages_list = list(messages.get_messages(response.wsgi_request))
+        self.assertEqual(len(messages_list), 1)
+        self.assertEqual(messages_list[0].level_tag, 'info')
+        self.assertIn("No Windows were found", messages_list[0].message)
+
+    def test_root_display_default_view(self):
+        window = Window.objects.create(title="Some Window", slug='win1')
+        response = self.client.post('/')
+        self.assertRedirects(response, '/windows/%s/' % window.slug)
 
 
 class WindowModelTest(ModelTestHelper):
