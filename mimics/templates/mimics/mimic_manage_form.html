@@ -1,4 +1,4 @@
-{% extends 'base.html' %}
+{% extends 'base_form.html' %}
 
 {% block title %}Manage Mimics{% endblock %}
 
@@ -8,12 +8,4 @@
 	<li><a href="{% url 'window_list' %}">Windows</a></li>
 	<li><a href="{% url 'window_details' window.slug %}">{{ window.title }}</a></li>
 	<li class="active">Mimics</li>
-{% endblock %}
-
-{% block content %}
-	<form method="post" action="">
-		{% csrf_token %}
-		{{ form.as_p }}
-		<input type="submit" class="btn btn-primary" value="Save"/>
-	</form>
 {% endblock %}
