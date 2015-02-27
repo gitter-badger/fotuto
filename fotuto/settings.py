@@ -51,9 +51,9 @@ MIDDLEWARE_CLASSES = (
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 )
 
-ROOT_URLCONF = 'isuscada.urls'
+ROOT_URLCONF = 'fotuto.urls'
 
-WSGI_APPLICATION = 'isuscada.wsgi.application'
+WSGI_APPLICATION = 'fotuto.wsgi.application'
 
 
 # Database

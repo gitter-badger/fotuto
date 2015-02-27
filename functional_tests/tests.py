@@ -15,11 +15,11 @@ class UsersTest(LiveServerTestCase):
         self.fail('Create this test!')
 
     def test_supervisor_can_view_mimics_and_charts(self):
-        # A visitor go to ISU-SCADA homepage
+        # A visitor go to Fotuto homepage
         self.browser.get(self.live_server_url)
 
-        # Visitor notice page title and header mention "ISU-SCADA"
-        self.assertIn("ISU-SCADA", self.browser.title)
+        # Visitor notice page title and header mention "Fotuto"
+        self.assertIn("Fotuto", self.browser.title)
 
         # A login form is shown
         # Since visitor have supervisor credentials he type it and proceed to log-in
