@@ -1,13 +1,13 @@
 from django.contrib.messages.views import SuccessMessageMixin
 from django.core.urlresolvers import reverse_lazy
-from django.views.generic import TemplateView, CreateView
+from django.views.generic import TemplateView, CreateView, DetailView
 from windows.forms import WindowForm
 from windows.models import Window
 
 
-class WindowDetailView(TemplateView):
+class WindowDetailView(DetailView):
     """Display a windows with mimics"""
-    template_name = 'windows/window_detail.html'
+    model = Window
 
 
 class WindowCreateView(SuccessMessageMixin, CreateView):

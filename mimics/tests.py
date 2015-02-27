@@ -56,10 +56,10 @@ class MimicManagementTest(TestCase):
     def test_add_mimic_can_save_a_post_request(self):
         self.client.post(self.manage_mimic_url, data={'window': self.window.pk})
         self.assertEqual(Mimic.objects.count(), 1)
-        self.assertEqual(self.window.mimic_set.count(), 1)
+        self.assertEqual(self.window.mimics.count(), 1)
         new_mimic = Mimic.objects.first()
         self.assertEqual(new_mimic.window, self.window)
-        self.assertEqual(self.window.mimic_set.all()[0], new_mimic)
+        self.assertEqual(self.window.mimics.all()[0], new_mimic)
 
     def test_add_mimic_page_redirects_after_POST(self):
         response = self.client.post(self.manage_mimic_url, data={'window': self.window.pk})

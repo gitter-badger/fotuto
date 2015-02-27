@@ -127,12 +127,15 @@ class UsersTest(LiveServerTestCase):
 
         # Enter variable data
         var_name = 'Low Battery'
-        input_name = self.browser.find_element_by_id('id_name')
+        input_var_name = self.browser.find_element_by_id('id_name')
         # TODO: self.assertEqual(input_name.get_attribute('placeholder'), 'Name of the variable')
-        input_name.send_keys(var_name)
+        input_var_name.send_keys(var_name)
         # Select device
-        select_device = self.browser.find_element_by_id('id_device')
-        select_device.send_keys(Keys.ARROW_DOWN)
+        select_var_device = self.browser.find_element_by_id('id_device')
+        select_var_device.send_keys(Keys.ARROW_DOWN)
+        # Specify a value
+        input_var_value = self.browser.find_element_by_id('id_value')
+        input_var_value.send_keys('1.0')
 
         # Submit form to add var
         btn_submit = self.browser.find_element_by_css_selector('.btn-primary')
@@ -180,11 +183,15 @@ class UsersTest(LiveServerTestCase):
         # Now he is in manage mimics for the window page
         self.check_page_title_and_header(title="Manage Mimics", header="Manage Mimics")
         # He notice breadcrumbs (windows > Window.Title > Mimics)
-        self.check_breadcrumbs((("Windows", '/windows/'), (window_title, '/windows/main-window/details/'), ("Mimics",),))
+        self.check_breadcrumbs((("Windows", '/windows/'), (window_title, '/windows/main-window/'), ("Mimics",),))
 
         # Add mimic to window
+        mimic_name = "Router"
         input_mimic_name = self.browser.find_element_by_id('id_name')
-        input_mimic_name.send_keys("Router")
+        input_mimic_name.send_keys(mimic_name)
+        # Specify var
+        select_mimic_vars = self.browser.find_element_by_id('id_vars')
+        select_mimic_vars.send_keys(Keys.ARROW_DOWN)
         # Left other mimic field with it default values
         # TODO: Enter position values and check them in window details page
 
@@ -194,25 +201,26 @@ class UsersTest(LiveServerTestCase):
 
         # TODO: Add mimic from device (use name and vars from device)
 
-        # It is redirected to window details
         # Confirmation message is shown
         self.check_notification_message("Mimic was added")
 
-        # Go to the windows (since this the first view it appears in the homepage)
-        self.browser.get(self.live_server_url)
+        # Go to window details page (using breadcrumbs)
+        button_view = self.browser.find_elements_by_link_text(window_title)[0]
+        button_view.click()
+
+        # Now he is details window page
+        self.check_page_title_and_header(title=window_title, header=window_title)
+        # He notice breadcrumbs (windows > Window.Title)
+        self.check_breadcrumbs((("Windows", '/windows/'), (window_title,),))
+
         # Then mimic for device with new variable is shown
-        mimic_title = self.browser.find_elements_by_css_selector('.mimic .title')[0].text
-        self.assertEqual(device_name, mimic_title)
+        mimic_name_html = self.browser.find_elements_by_css_selector('.mimic .name')[0].text
+        self.assertEqual(mimic_name_html, mimic_name)
 
         # A variable value indicator and variable's name
         var_item = self.browser.find_elements_by_css_selector('.mimic .var')[0]
-        self.assertEqual("1", var_item.text)
-        self.assertEqual("Working", var_item.get_attribute('title'))
-
-        # Mimic window should have options to add/remove/reorder vars
-
-        # Then default mimic page is shown and following elements appears in the content:
-        self.fail('Finish this test!')
+        self.assertEqual("1.0", var_item.text)
+        self.assertEqual(var_name, var_item.get_attribute('title'))
 
     def check_page_title_and_header(self, url=None, title=None, header=None):
         """Checks if a page have specified title and header.

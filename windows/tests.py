@@ -15,15 +15,7 @@ class HomePageTest(TestCase):
         found = resolve('/')
         self.assertTrue(found.func, WindowDetailView)
 
-    def test_home_page_returns_correct_html(self):
-        request = HttpRequest()
-        request.method = 'GET'
-        generic_window_view = WindowDetailView()
-        generic_window_view.request = request
-        response = generic_window_view.dispatch(request)
-        self.assertEqual(response.status_code, 200)
-        expected_html = render_to_string('windows/window_detail.html')
-        self.assertEqual(response.rendered_content.decode(), expected_html)
+    # TODO: Test if show a default view, if no view it should display an intro page to start wizard for add view
 
 
 class WindowModelTest(ModelTestHelper):
@@ -39,7 +31,7 @@ class WindowModelTest(ModelTestHelper):
     def test_unique_slug(self):
         win1 = {'title': "First Window Title"}
         win2 = {'title': "Second Window Title"}
-        self.check_unique_field(model=Window, obj1_dict=win1, obj2_dict=win1)
+        self.check_unique_field(model=Window, obj1_dict=win1, obj2_dict=win2)
 
 
 class WindowAddTest(TestCase):
@@ -116,3 +108,34 @@ class WindowListTest(TestCase):
         response = self.client.get('/windows/')
         self.assertContains(response, "First Window Title")
         self.assertContains(response, "Second Window Title")
+
+
+class WindowDetailTest(TestCase):
+    def setUp(self):
+        self.window = Window.objects.create(title="First Window Title", slug="win1")
+        self.window_url = '/windows/%s/' % self.window.slug
+        # TODO: Add mimics
+
+    def test_details_returns_correct_html(self):
+        request = HttpRequest()
+        request.method = 'GET'
+        generic_window_view = WindowDetailView()
+        generic_window_view.request = request
+        generic_window_view.kwargs = {'slug': self.window.slug}
+        response = generic_window_view.dispatch(request)
+        self.assertEqual(response.status_code, 200)
+        expected_html = render_to_string('windows/window_detail.html', {'window': self.window})
+        self.assertEqual(response.rendered_content.decode(), expected_html)
+
+    def test_details_url_resolves_to_details_view(self):
+        found = resolve(self.window_url)
+        self.assertEqual(found.func.func_name, 'WindowDetailView')
+
+    def test_uses_template(self):
+        response = self.client.get(self.window_url)
+        self.assertTemplateUsed(response, 'windows/window_detail.html')
+
+    def test_displays_window_data(self):
+        response = self.client.get(self.window_url)
+        self.assertContains(response, self.window.title)
+        # TODO: Check mimics and vars
