@@ -34,6 +34,7 @@ class MimicManagementTest(TestCase):
         self.manage_mimic_url = '/windows/%s/mimics/manage/' % self.window.slug
 
     # TODO: Test add vars in mimic
+    # TODO: Test template used
 
     def test_add_url_resolves_to_create_view(self):
         found = resolve(self.manage_mimic_url)
@@ -76,3 +77,17 @@ class MimicManagementTest(TestCase):
         response = self.client.post(self.manage_mimic_url, data={'window': self.window.pk})
         response_redirected = self.client.get(response.url)
         self.assertIn('Mimic was added.', response_redirected.rendered_content)
+
+    def test_displays_only_mimics_for_that_windows(self):
+        # TODO: Implement this with model_formset
+        Mimic.objects.create(name='Mimic 1', window=self.window)
+        Mimic.objects.create(name='Mimic 2', window=self.window)
+        other_window = Window.objects.create(slug="other-win")
+        Mimic.objects.create(name='Mimic 3', window=other_window)
+        Mimic.objects.create(name='Mimic 4', window=other_window)
+        response = self.client.get(self.manage_mimic_url)
+        self.assertContains(response, 'Mimic 1')
+        self.assertContains(response, 'Mimic 2')
+        self.assertNotContains(response, 'Mimic 3')
+        self.assertNotContains(response, 'Mimic 4')
+

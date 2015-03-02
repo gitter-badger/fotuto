@@ -5,7 +5,25 @@
 {% block header_text %}Manage Mimics{% endblock %}
 
 {% block breadcrums %}
-	<li><a href="{% url 'window_list' %}">Windows</a></li>
-	<li><a href="{% url 'window_details' window.slug %}">{{ window.title }}</a></li>
-	<li class="active">Mimics</li>
+    <li><a href="{% url 'window_list' %}">Windows</a></li>
+    <li><a href="{% url 'window_details' window.slug %}">{{ window.title }}</a></li>
+    <li class="active">Mimics</li>
+{% endblock %}
+
+{% block content %}
+    <h3>Add new</h3>
+    {{ block.super }}
+    <h3>Mimics</h3>
+    <table>
+        <tr>
+            <th>Name</th>
+            <th>Actions</th>
+        </tr>
+        {% for mimic in window.mimics.all %}
+            <tr>
+                <td>{{ mimic.name }}</td>
+                <td>Edit Delete</td>
+            </tr>
+        {% endfor %}
+    </table>
 {% endblock %}
