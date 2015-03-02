@@ -6,11 +6,32 @@
 </head>
 <body>
 <h1>Fotuto</h1>
-<nav>
-	<ul>
-		<li class="active"><a href="{% url 'mimics' %}">Mimics</a></li>
-		<li><a href="/history/">History charts</a></li>
-	</ul>
+<nav class="nav">
+    <ul>
+        <li class="active"><a href="{% url 'mimics' %}">Mimics</a>
+            <ul>
+                <li>
+                    <a href="#">Manage</a>
+                    <ul>
+                        <li><a href="{% url 'mimic_list' %}">Mimics</a></li>
+                        <li><a href="{% url 'window_list' %}">Windows</a></li>
+                        <li><a href="{% url 'device_list' %}">Devices</a></li>
+                        <li><a href="{% url 'var_list' %}">Vars</a></li>
+                    </ul>
+                </li>
+                <li>
+                    <a href="#">Add</a>
+                    <ul>
+                        <li><a href="{% url 'mimic_add' %}">Mimic</a></li>
+                        <li><a href="{% url 'window_add' %}">Window</a></li>
+                        <li><a href="{% url 'device_add' %}">Device</a></li>
+                        <li><a href="{% url 'var_add' %}">Var</a></li>
+                    </ul>
+                </li>
+            </ul>
+        </li>
+        <li><a href="/history/">History charts</a></li>
+    </ul>
 </nav>
 
 <div id="welcome">Welcome Elpidio</div>

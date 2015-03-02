@@ -12,7 +12,7 @@ class MimicManageView(SuccessMessageMixin, CreateView):
     success_message = "Mimic was added."
 
     def get_success_url(self):
-        return reverse('mimic_manage', args=(self.window.slug,))
+        return reverse('mimic_manage_window', args=(self.window.slug,))
 
     def get_initial(self):
         """

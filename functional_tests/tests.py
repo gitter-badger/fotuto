@@ -36,7 +36,7 @@ class UsersTest(LiveServerTestCase):
 
         # Menus displays options to view items
         # TODO: If there are more than 1 mimic window no submenu is shown, else list of windows is shown, the same for
-        #   History Charts
+        # History Charts
 
         # Link to mimic page is active
         menu_active = self.browser.find_element_by_css_selector('nav li.active')
@@ -80,7 +80,10 @@ class UsersTest(LiveServerTestCase):
         # Operator type his credential and proceed to log-in
         # TODO: Test login form
 
-        # TODO: Check operator menu
+        # Check operator menu
+        menu = self.get_menu_item()
+        self.assertEqual(len(menu.find_elements_by_tag_name('li')), 12)
+        self.goto_menu_item(("Add", "Var"))
         # Operator have more options to customize the scada:
         # Menus:
         # * Mimics -> Add -> Window
@@ -118,8 +121,7 @@ class UsersTest(LiveServerTestCase):
         self.check_notification_message("Device was added")
 
         # Operator goes to add var page
-        # TODO: Use menu to find link?
-        self.browser.get('%s/vars/add/' % self.live_server_url)
+        self.goto_menu_item(("Add", "Var"))
         self.check_page_title_and_header(title="Add Variable", header="Add Variable")
 
         # He notice breadcrumbs (vars > add new)
@@ -155,7 +157,7 @@ class UsersTest(LiveServerTestCase):
         # Add new added variable to window
         # Since a new device with a variable was added, automatically new mimic with var was created
         # So create new window
-        self.browser.get('%s/windows/add/' % self.live_server_url)
+        self.goto_menu_item(("Add", "Window"))
         self.check_page_title_and_header(title="Add Window", header="Add Window")
         # He notice breadcrumbs (windows > add new)
         self.check_breadcrumbs((("Windows", '/windows/'), ("Add new",)))
@@ -265,3 +267,15 @@ class UsersTest(LiveServerTestCase):
             else:
                 breadcrumb_item_text = breadcrumbs.find_element_by_css_selector('li.active').text
                 self.assertEqual(breadcrumb_item_text, item[0])
+
+    def get_menu_item(self, menu_path=None):
+        menu_item = self.browser.find_element_by_tag_name('nav')
+        if menu_path is not None:
+            # for item_text in menu_path:
+            # menu_item = menu_item.find_element_by_link_text(item_text)
+            # FIXME: Next line should be delete and fix previous 2 lines to find parent element of the link found
+            menu_item = menu_item.find_element_by_link_text(menu_path[-1])
+        return menu_item
+
+    def goto_menu_item(self, menu_path):
+        self.get_menu_item(menu_path).click()
