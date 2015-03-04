@@ -1,4 +1,6 @@
+from datetime import timedelta
 from django.test import LiveServerTestCase
+from django.utils.datetime_safe import datetime
 from selenium import webdriver
 from selenium.webdriver.common.keys import Keys
 
@@ -94,6 +96,10 @@ class UsersTest(LiveServerTestCase):
         # * Mimics -> Manage -> Devices
         # * Mimics -> Manage -> Vars
         # * Mimics -> Manage -> Mimic
+        # * Mimics -> Windows -> Window 1 Title
+        # * Mimics -> Windows -> Window 2 Title
+        # * ...
+        # * Mimics -> Windows -> Window n Title
         # * History -> Add -> Chart
         # * History -> Manage -> Charts
 
@@ -219,10 +225,22 @@ class UsersTest(LiveServerTestCase):
         mimic_name_html = self.browser.find_elements_by_css_selector('.mimic .name')[0].text
         self.assertEqual(mimic_name_html, mimic_name)
 
-        # A variable value indicator and variable's name
+        # A variable value indicator and variable's name is shown
         var_item = self.browser.find_elements_by_css_selector('.mimic .var')[0]
         self.assertEqual("1.0", var_item.text)
         self.assertEqual(var_name, var_item.get_attribute('title'))
+
+        # Last update timestamp is shown in page
+        last_update_text = self.browser.find_element_by_css_selector('#last_updated_notificaion .value').text
+        # Timestamp is close to now
+        # TODO: Use human friendly format and/or django settings date and times format
+        last_update_date = datetime.strptime(last_update_text, '%Y-%m-%d @ %H:%M:%S')
+        now = datetime.now()
+        self.assertAlmostEqual((now - last_update_date).total_seconds(), 0, delta=5)
+        # TODO: replace delta 5 with a new window.refresh_interval field
+        # some time later last update changes
+        # If var value change some time later change is displayed
+        self.fail("Complete test!")
 
     def check_page_title_and_header(self, url=None, title=None, header=None):
         """Checks if a page have specified title and header.
