@@ -10,7 +10,7 @@
 {% endblock %}
 
 {% block content %}
-    <div id="last_updated_notificaion">Last updated: <span class="value">2015-02-09 @ 05:12:10</span></div>
+    <div id="last_updated_notificaion">Last updated: <span class="value">{{ timestamp|date:'Y-m-d @ H:i:s' }}</span></div>
     {% for mimic in window.mimics.all %}
         <div class="mimic">
             <h3 class="name">{{ mimic.name }}</h3>

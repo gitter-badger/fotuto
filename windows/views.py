@@ -1,6 +1,7 @@
 from django.contrib import messages
 from django.contrib.messages.views import SuccessMessageMixin
 from django.core.urlresolvers import reverse_lazy, reverse
+from django.utils.datetime_safe import datetime
 from django.views.generic import TemplateView, CreateView, DetailView
 from django.views.generic.base import RedirectView
 from windows.forms import WindowForm
@@ -26,6 +27,11 @@ class WindowDefaultView(RedirectView):
 class WindowDetailView(DetailView):
     """Display a windows with mimics"""
     model = Window
+
+    def get_context_data(self, **kwargs):
+        context = super(WindowDetailView, self).get_context_data(**kwargs)
+        context['timestamp'] = datetime.now().replace(microsecond=0)
+        return context
 
 
 class WindowCreateView(SuccessMessageMixin, CreateView):

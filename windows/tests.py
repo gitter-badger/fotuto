@@ -3,6 +3,7 @@ from django.core.urlresolvers import resolve
 from django.http import HttpRequest
 from django.template.loader import render_to_string
 from django.test import TestCase
+from django.utils.datetime_safe import datetime
 from django.views.generic import CreateView
 from fotutils.tests import ModelTestHelper
 from windows.forms import WindowForm
@@ -138,8 +139,13 @@ class WindowDetailTest(TestCase):
         generic_window_view.kwargs = {'slug': self.window.slug}
         response = generic_window_view.dispatch(request)
         self.assertEqual(response.status_code, 200)
-        expected_html = render_to_string('windows/window_detail.html', {'window': self.window})
+        now = datetime.now().replace(microsecond=0)
+        expected_html = render_to_string('windows/window_detail.html', {
+            'window': self.window, 'timestamp': now
+        })
         self.assertEqual(response.rendered_content.decode(), expected_html)
+        # Check last update timestamp format
+        self.assertContains(response, now.strftime('%Y-%m-%d @ %H:%M:%S'))
 
     def test_details_url_resolves_to_details_view(self):
         found = resolve(self.window_url)
@@ -153,3 +159,8 @@ class WindowDetailTest(TestCase):
         response = self.client.get(self.window_url)
         self.assertContains(response, self.window.title)
         # TODO: Check mimics and vars
+
+    def test_context_timestamp(self):
+        response = self.client.get(self.window_url)
+        now = datetime.now().replace(microsecond=0)
+        self.assertDictContainsSubset({'timestamp': now}, response.context_data)
