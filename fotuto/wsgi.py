@@ -1,5 +1,5 @@
 """
-WSGI config for isuscada project.
+WSGI config for fotuto project.
 
 It exposes the WSGI callable as a module-level variable named ``application``.
 
