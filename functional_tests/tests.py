@@ -3,9 +3,24 @@ from django.utils.datetime_safe import datetime
 from selenium import webdriver
 from selenium.common.exceptions import NoSuchElementException
 from selenium.webdriver.common.keys import Keys
+import sys
 
 
 class UsersTest(StaticLiveServerTestCase):
+    @classmethod
+    def setUpClass(cls):
+        for arg in sys.argv:
+            if 'liveserver' in arg:
+                cls.server_url = 'http://' + arg.split('=')[1]
+                return
+        super(UsersTest, cls).setUpClass()
+        cls.server_url = cls.live_server_url
+
+    @classmethod
+    def tearDownClass(cls):
+        if cls.server_url == cls.live_server_url:
+            super(UsersTest, cls).tearDownClass()
+
     def setUp(self):
         self.browser = webdriver.Firefox()
         self.browser.implicitly_wait(3)
@@ -18,7 +33,7 @@ class UsersTest(StaticLiveServerTestCase):
 
     def test_supervisor_can_view_mimics_and_charts(self):
         # A visitor go to Fotuto homepage
-        self.browser.get(self.live_server_url)
+        self.browser.get(self.server_url)
 
         # Visitor notice page title and header mention "Fotuto"
         self.assertIn("Fotuto", self.browser.title)
@@ -77,14 +92,14 @@ class UsersTest(StaticLiveServerTestCase):
     def test_layout_and_styling(self):
         # For a simple layout and styling test check user area is near to top right corner
         # Visitor goes to the home page
-        self.browser.get(self.live_server_url)
+        self.browser.get(self.server_url)
         # He notice user area is at top right
         user_area = self.browser.find_element_by_id('welcome')
         self.assertAlmostEqual(user_area.location['y'], 0, delta=20)
 
     def test_operator_can_add_vars_to_window(self):
         # A operator go to add var page
-        self.browser.get('%s/vars/add/' % self.live_server_url)
+        self.browser.get('%s/vars/add/' % self.server_url)
 
         # A login form is shown
         # Operator type his credential and proceed to log-in
@@ -258,7 +273,7 @@ class UsersTest(StaticLiveServerTestCase):
         :param header: Text in main page heading (default: None)
         """
         if url is not None:
-            self.browser.get('%s%s' % (self.live_server_url, url))
+            self.browser.get('%s%s' % (self.server_url, url))
         if title is not None:
             self.assertIn(title, self.browser.title)
 
