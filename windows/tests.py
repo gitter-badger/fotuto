@@ -9,7 +9,7 @@ from django.views.generic import CreateView
 from fotutils.tests import ModelTestHelper
 from windows.forms import WindowForm
 from windows.models import Window
-from windows.views import WindowDetailView, WindowDefaultView
+from windows.views import WindowDetailView, WindowDefaultView, WindowCreateView
 
 
 class HomePageTest(TestCase):
@@ -50,6 +50,8 @@ class WindowModelTest(ModelTestHelper):
 
 
 class WindowAddTest(TestCase):
+    maxDiff = None
+
     def test_add_url_resolves_to_create_view(self):
         found = resolve('/windows/add/')
         self.assertTrue(found.func, CreateView)
@@ -57,7 +59,7 @@ class WindowAddTest(TestCase):
     def test_add_window_returns_correct_html(self):
         request = HttpRequest()
         request.method = 'GET'
-        generic_add_window_view = CreateView(model=Window)
+        generic_add_window_view = WindowCreateView(model=Window)
         generic_add_window_view.request = request
         response = generic_add_window_view.dispatch(request)
         self.assertEqual(response.status_code, 200)

@@ -8,7 +8,7 @@ from django.views.generic import CreateView
 from fotutils.tests import ModelTestHelper
 from vars.forms import VarForm, DeviceForm
 from vars.models import Device, Var
-from vars.views import VarCreateView
+from vars.views import VarCreateView, DeviceCreateView
 
 
 class DeviceModelTest(ModelTestHelper):
@@ -38,14 +38,16 @@ class DeviceModelTest(ModelTestHelper):
 
 
 class DeviceAddTest(TestCase):
+    maxDiff = None
+
     def test_add_url_resolves_to_create_view(self):
         found = resolve('/devices/add/')
         self.assertTrue(found.func, CreateView)
 
-    def test_add_returns_correct_html(self):
+    def test_add_device_returns_correct_html(self):
         request = HttpRequest()
         request.method = 'GET'
-        generic_add_device_view = CreateView(model=Device)
+        generic_add_device_view = DeviceCreateView(model=Device)
         generic_add_device_view.request = request
         response = generic_add_device_view.dispatch(request)
         self.assertEqual(response.status_code, 200)
