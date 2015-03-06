@@ -1,6 +1,7 @@
 from django.contrib import messages
 from django.core.urlresolvers import resolve
 from django.http import HttpRequest
+from django.template import RequestContext
 from django.template.loader import render_to_string
 from django.test import TestCase
 from django.views.generic import CreateView
@@ -11,7 +12,6 @@ from vars.views import VarCreateView
 
 
 class DeviceModelTest(ModelTestHelper):
-
     def test_saving_and_retrieving_devices(self):
         dev1 = {'name': "First Device Name", 'slug': 'dev1', 'address': '1'}
         dev2 = {'name': "Second Device Name", 'slug': 'dev2', 'address': '2'}
@@ -49,7 +49,8 @@ class DeviceAddTest(TestCase):
         generic_add_device_view.request = request
         response = generic_add_device_view.dispatch(request)
         self.assertEqual(response.status_code, 200)
-        expected_html = render_to_string('vars/device_form.html', {'form': DeviceForm()})
+        expected_html = render_to_string('vars/device_form.html', {'form': DeviceForm()},
+            context_instance=RequestContext(request))
         self.assertMultiLineEqual(response.rendered_content.decode(), expected_html)
 
     def test_add_device_can_save_a_post_request(self):
@@ -165,7 +166,8 @@ class VarAddTest(TestCase):
         generic_add_var_view.request = request
         response = generic_add_var_view.dispatch(request)
         self.assertEqual(response.status_code, 200)
-        expected_html = render_to_string('vars/var_form.html', {'form': VarForm()})
+        expected_html = render_to_string('vars/var_form.html', {'form': VarForm()},
+            context_instance=RequestContext(request))
         self.assertMultiLineEqual(response.rendered_content.decode(), expected_html)
 
     def test_add_var_can_save_a_post_request(self):

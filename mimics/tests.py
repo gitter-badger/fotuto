@@ -1,6 +1,7 @@
 from django.contrib import messages
 from django.core.urlresolvers import resolve
 from django.http import HttpRequest
+from django.template.context import RequestContext
 from django.template.loader import render_to_string
 from django.test import TestCase
 from fotutils.tests import ModelTestHelper
@@ -51,7 +52,7 @@ class MimicManagementTest(TestCase):
         expected_html = render_to_string('mimics/mimic_manage_form.html', {
             'form': MimicManageForm(initial={'window': self.window.pk}),
             'window': self.window
-        })
+        }, context_instance=RequestContext(request))
         self.assertMultiLineEqual(response.rendered_content.decode(), expected_html)
 
     def test_add_mimic_can_save_a_post_request(self):

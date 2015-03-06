@@ -1,6 +1,7 @@
 from django.contrib import messages
 from django.core.urlresolvers import resolve
 from django.http import HttpRequest
+from django.template import RequestContext
 from django.template.loader import render_to_string
 from django.test import TestCase
 from django.utils.datetime_safe import datetime
@@ -34,7 +35,6 @@ class HomePageTest(TestCase):
 
 
 class WindowModelTest(ModelTestHelper):
-
     def test_saving_and_retrieving_windows(self):
         win1 = {'title': "First Window Title", 'slug': 'win1'}
         win2 = {'title': "Second Window Title", 'slug': 'win2'}
@@ -50,7 +50,6 @@ class WindowModelTest(ModelTestHelper):
 
 
 class WindowAddTest(TestCase):
-
     def test_add_url_resolves_to_create_view(self):
         found = resolve('/windows/add/')
         self.assertTrue(found.func, CreateView)
@@ -62,7 +61,8 @@ class WindowAddTest(TestCase):
         generic_add_window_view.request = request
         response = generic_add_window_view.dispatch(request)
         self.assertEqual(response.status_code, 200)
-        expected_html = render_to_string('windows/window_form.html', {'form': WindowForm()})
+        expected_html = render_to_string('windows/window_form.html', {'form': WindowForm()},
+            context_instance=RequestContext(request))
         self.assertMultiLineEqual(response.rendered_content.decode(), expected_html)
 
     def test_add_window_can_save_a_post_request(self):
@@ -108,7 +108,6 @@ class WindowAddTest(TestCase):
 
 
 class WindowListTest(TestCase):
-
     def test_list_url_resolves_to_list_view(self):
         found = resolve('/windows/')
         self.assertEqual(found.func.func_name, 'ListView')
@@ -142,7 +141,7 @@ class WindowDetailTest(TestCase):
         now = datetime.now().replace(microsecond=0)
         expected_html = render_to_string('windows/window_detail.html', {
             'window': self.window, 'timestamp': now
-        })
+        }, context_instance=RequestContext(request))
         self.assertEqual(response.rendered_content.decode(), expected_html)
         # Check last update timestamp format
         self.assertContains(response, now.strftime('%Y-%m-%d @ %H:%M:%S'))
