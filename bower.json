@@ -1,0 +1,15 @@
+{
+	"name": "fotuto",
+	"version": "1.0a",
+	"homepage": "https://github.com/cesarcruz/fotuto",
+	"authors": [
+		"Julio Cesar <juliocesarrodriguezcruz@gmail.com>"
+	],
+	"description": "Fotuto is a web SCADA to monitor variables, control actions and send notifications.",
+	"private": false,
+	"dependencies": {
+		"bootstrap": "~3.3.2",
+		"jquery": "~2.1.3",
+		"fontawesome": "~4.2.0"
+	}
+}
