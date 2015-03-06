@@ -297,12 +297,12 @@ class UsersTest(StaticLiveServerTestCase):
 
     def get_menu_item(self, menu_path=None):
         if menu_path is None:
-            menu_path = ("Mimics",)
+            menu_path = ("Dashboards",)
         try:
             return self.browser.find_element_by_link_text(menu_path[-1])
         except NoSuchElementException:
             # Display submenu first
-            self.browser.find_element_by_link_text('Mimics').click()
+            self.browser.find_element_by_link_text('Dashboards').click()
             return self.browser.find_element_by_link_text(menu_path[-1])
 
     def goto_menu_item(self, menu_path):
