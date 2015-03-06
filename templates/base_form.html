@@ -1,11 +1,16 @@
 {% extends 'base.html' %}
 
+{% load bootstrap3 %}
 {# TODO: Add form.media resources and form.errors messages #}
 
 {% block content %}
 	<form method="post" action="">
 		{% csrf_token %}
-		{{ form.as_p }}
-		<input type="submit" class="btn btn-primary" value="Save"/>
+		{% bootstrap_form form %}
+		{% buttons %}
+            <button type="submit" class="btn btn-primary">
+                {% bootstrap_icon " fa fa-save" %} Save
+            </button>
+        {% endbuttons %}
 	</form>
 {% endblock %}
