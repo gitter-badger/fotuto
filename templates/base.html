@@ -76,6 +76,7 @@
 			<div class="alert alert-{{ message.tags }}">{{ message }}</div>
 		{% endfor %}
 	{% endif %}
+	{% block messages %}{% endblock %}
 	{% block content %}{% endblock %}
 </div>
 <script src="{{ STATIC_URL }}bower_components/jquery/dist/jquery.min.js"></script>

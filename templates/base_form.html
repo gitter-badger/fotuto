@@ -3,6 +3,10 @@
 {% load bootstrap3 %}
 {# TODO: Add form.media resources and form.errors messages #}
 
+{% block messages %}
+	{% bootstrap_form_errors form %}
+{% endblock %}
+
 {% block content %}
 	<form method="post" action="">
 		{% csrf_token %}
