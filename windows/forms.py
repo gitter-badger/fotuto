@@ -1,4 +1,5 @@
 from django import forms
+from django.forms import HiddenInput
 from django.utils.text import slugify
 from windows.models import Window
 
@@ -8,6 +9,9 @@ class WindowForm(forms.ModelForm):
     class Meta:
         model = Window
         fields = '__all__'
+        widgets = {
+            'slug': HiddenInput
+        }
 
     def __init__(self, *args, **kwargs):
         super(WindowForm, self).__init__(*args, **kwargs)

@@ -1,4 +1,5 @@
 from django import forms
+from django.forms.widgets import HiddenInput
 from django.utils.text import slugify
 from vars.models import Var, Device
 
@@ -8,6 +9,9 @@ class VarForm(forms.ModelForm):
     class Meta:
         model = Var
         fields = '__all__'
+        widgets = {
+            'slug': HiddenInput
+        }
 
     def __init__(self, *args, **kwargs):
         super(VarForm, self).__init__(*args, **kwargs)
@@ -34,6 +38,9 @@ class DeviceForm(forms.ModelForm):
     class Meta:
         model = Device
         fields = '__all__'
+        widgets = {
+            'slug': HiddenInput
+        }
 
     def __init__(self, *args, **kwargs):
         super(DeviceForm, self).__init__(*args, **kwargs)

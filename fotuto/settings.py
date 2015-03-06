@@ -93,3 +93,9 @@ STATICFILES_DIRS = (
 TEMPLATE_DIRS = (
     os.path.join(BASE_DIR, 'templates'),
 )
+
+# django-bootstrap3 settings
+BOOTSTRAP3 = {
+    'jquery_url': '%s%s' % (STATIC_URL, 'bower_components/jquery/dist/jquery.min.js'),
+    'base_url': '%s%s' % (STATIC_URL, 'bower_components/bootstrap/dist'),
+}
