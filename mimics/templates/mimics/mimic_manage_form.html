@@ -2,28 +2,37 @@
 
 {% block title %}Manage Mimics{% endblock %}
 
-{% block header_text %}Manage Mimics{% endblock %}
+{% block header_text %}<i class="fa fa-dashboard"></i> Manage Mimics for {{ window.title }}{% endblock %}
 
 {% block breadcrums %}
-    <li><a href="{% url 'window_list' %}">Windows</a></li>
-    <li><a href="{% url 'window_details' window.slug %}">{{ window.title }}</a></li>
-    <li class="active">Mimics</li>
+	<li><a href="{% url 'window_list' %}">Windows</a></li>
+	<li><a href="{% url 'window_details' window.slug %}">{{ window.title }}</a></li>
+	<li class="active">Mimics</li>
+{% endblock %}
+
+{% block toolsbar %}
+	<a href="{% url 'var_add' %}" class="btn btn-primary"><i class="fa fa-plus-square"></i> Add Variable</a>
 {% endblock %}
 
 {% block content %}
-    <h3>Add new</h3>
-    {{ block.super }}
-    <h3>Mimics</h3>
-    <table>
-        <tr>
-            <th>Name</th>
-            <th>Actions</th>
-        </tr>
-        {% for mimic in window.mimics.all %}
-            <tr>
-                <td>{{ mimic.name }}</td>
-                <td>Edit Delete</td>
-            </tr>
-        {% endfor %}
-    </table>
+	<h3>Add new</h3>
+	{{ block.super }}
+	<h3>Mimics</h3>
+	<table class="table">
+		<tr>
+			<th>Name</th>
+			<th>Actions</th>
+		</tr>
+		{% for mimic in window.mimics.all %}
+			<tr>
+				<td>{{ mimic.name }}</td>
+				<td class="btn-group-xs">
+					<a href="#" class="btn btn-default" title="Edit"><i class="fa fa-pencil"></i></a>
+					<a href="#" class="btn btn-danger" title="Delete"><i class="fa fa-trash"></i></a>
+				</td>
+			</tr>
+			{% empty %}
+			<tr><td colspan="2" class="alert alert-warning">No mimic found for this window.</td></tr>
+		{% endfor %}
+	</table>
 {% endblock %}

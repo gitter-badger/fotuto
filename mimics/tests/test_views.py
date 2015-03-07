@@ -35,6 +35,10 @@ class MimicManagementTest(TestCase):
         self.assertEqual(response.context['window'], self.window)
         self.assertContains(response, self.window.title)
 
+    def test_displays_no_mimics_message(self):
+        response = self.client.get(self.manage_mimic_url)
+        self.assertContains(response, "No mimic found for this window.")
+
     def test_displays_only_mimics_for_that_windows(self):
         Mimic.objects.create(name='Mimic 1', window=self.window)
         Mimic.objects.create(name='Mimic 2', window=self.window)
