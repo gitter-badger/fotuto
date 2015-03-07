@@ -6,7 +6,6 @@ from django.template.loader import render_to_string
 from django.test import TestCase
 from django.utils.datetime_safe import datetime
 from django.views.generic import CreateView
-from fotutils.tests import ModelTestHelper
 from windows.forms import WindowForm
 from windows.models import Window
 from windows.views import WindowDetailView, WindowDefaultView, WindowCreateView
@@ -32,21 +31,6 @@ class HomePageTest(TestCase):
         window = Window.objects.create(title="Some Window", slug='win1')
         response = self.client.post('/')
         self.assertRedirects(response, '/windows/%s/' % window.slug)
-
-
-class WindowModelTest(ModelTestHelper):
-    def test_saving_and_retrieving_windows(self):
-        win1 = {'title': "First Window Title", 'slug': 'win1'}
-        win2 = {'title': "Second Window Title", 'slug': 'win2'}
-        self.check_saving_and_retrieving_objects(model=Window, obj1_dict=win1, obj2_dict=win2)
-
-    def test_require_slug(self):
-        self.check_require_field(model=Window, title="Some title")
-
-    def test_unique_slug(self):
-        win1 = {'title': "First Window Title"}
-        win2 = {'title': "Second Window Title"}
-        self.check_unique_field(model=Window, obj1_dict=win1, obj2_dict=win2)
 
 
 class WindowAddTest(TestCase):
