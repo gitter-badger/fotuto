@@ -1,3 +1,4 @@
+from django.core.urlresolvers import reverse
 from django.db import models
 
 
@@ -9,3 +10,6 @@ class Window(models.Model):
     )
     # TODO: Add image field for background
     description = models.CharField(max_length=256, blank=True)
+
+    def get_absolute_url(self):
+        return reverse('window_details', args=(self.slug,))

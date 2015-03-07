@@ -30,7 +30,7 @@ class HomePageTest(TestCase):
     def test_root_display_default_view(self):
         window = Window.objects.create(title="Some Window", slug='win1')
         response = self.client.post('/')
-        self.assertRedirects(response, '/windows/%s/' % window.slug)
+        self.assertRedirects(response, window.get_absolute_url())
 
 
 class WindowAddTest(TestCase):
@@ -113,7 +113,6 @@ class WindowListTest(TestCase):
 class WindowDetailTest(TestCase):
     def setUp(self):
         self.window = Window.objects.create(title="First Window Title", slug="win1")
-        self.window_url = '/windows/%s/' % self.window.slug
         # TODO: Add mimics
 
     def test_details_returns_correct_html(self):
@@ -133,19 +132,19 @@ class WindowDetailTest(TestCase):
         self.assertContains(response, now.strftime('%Y-%m-%d @ %H:%M:%S'))
 
     def test_details_url_resolves_to_details_view(self):
-        found = resolve(self.window_url)
+        found = resolve(self.window.get_absolute_url())
         self.assertEqual(found.func.func_name, 'WindowDetailView')
 
     def test_uses_template(self):
-        response = self.client.get(self.window_url)
+        response = self.client.get(self.window.get_absolute_url())
         self.assertTemplateUsed(response, 'windows/window_detail.html')
 
     def test_displays_window_data(self):
-        response = self.client.get(self.window_url)
+        response = self.client.get(self.window.get_absolute_url())
         self.assertContains(response, self.window.title)
         # TODO: Check mimics and vars
 
     def test_context_timestamp(self):
-        response = self.client.get(self.window_url)
+        response = self.client.get(self.window.get_absolute_url())
         now = datetime.now().replace(microsecond=0)
         self.assertDictContainsSubset({'timestamp': now}, response.context_data)

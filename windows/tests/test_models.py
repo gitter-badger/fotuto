@@ -15,3 +15,7 @@ class WindowModelTest(ModelTestHelper):
         win1 = {'title': "First Window Title"}
         win2 = {'title': "Second Window Title"}
         self.check_unique_field(model=Window, obj1_dict=win1, obj2_dict=win2)
+
+    def test_get_absolute_url(self):
+        window = Window.objects.create(title="Some Window Title", slug="win")
+        self.assertEqual(window.get_absolute_url(), '/windows/%s/' % (window.slug,))

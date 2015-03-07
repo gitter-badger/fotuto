@@ -16,9 +16,9 @@
         </tr>
         {% for window in window_list %}
             <tr>
-                <td>{{ window.title }}</td>
+                <td><a href="{{ window.get_absolute_url }}">{{ window.title }}</a></td>
                 <td>
-                    <a href="{% url 'window_details' window.slug %}" class="view">View</a>
+                    <a href="{{ window.get_absolute_url }}" class="view">View</a>
                     Edit
                     <a href="{% url 'mimic_manage_window' window.slug %}" class="manage-mimics">Mimics</a>
                     Delete
