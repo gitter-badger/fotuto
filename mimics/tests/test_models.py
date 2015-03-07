@@ -4,6 +4,8 @@ from windows.models import Window
 
 
 class MimicModelTest(ModelTestHelper):
+    model = Mimic
+
     def setUp(self):
         # Mimics require a window
         self.window, create = Window.objects.get_or_create(slug="win1")
@@ -12,10 +14,10 @@ class MimicModelTest(ModelTestHelper):
         mimic1 = {'name': "First Mimic Name", 'window': self.window}
         mimic2 = {'name': "Second Mimic Name", 'window': self.window}
         # TODO: specify vars
-        self.check_saving_and_retrieving_objects(model=Mimic, obj1_dict=mimic1, obj2_dict=mimic2)
+        self.check_saving_and_retrieving_objects(obj1_dict=mimic1, obj2_dict=mimic2)
 
     def test_require_window(self):
-        self.check_require_field(model=Mimic, required_field='window', error_key='null')
+        self.check_require_field(required_field='window', error_key='null')
 
     def test_string_representation(self):
-        self.check_string_representation(Mimic, "Some Mimic Name", name="Some Mimic Name", window=self.window)
+        self.check_string_representation("Some Mimic Name", name="Some Mimic Name", window=self.window)
