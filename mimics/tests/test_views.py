@@ -23,7 +23,7 @@ class MimicManagementTest(TestCase):
 
     def test_add_url_resolves_to_create_view(self):
         found = resolve(self.manage_mimic_url)
-        self.assertTrue(found.func, MimicManageView)
+        self.assertEqual(found.func.func_name, 'MimicManageView')
 
     def test_manage_mimic_returns_correct_html(self):
         request = HttpRequest()
@@ -38,6 +38,10 @@ class MimicManagementTest(TestCase):
             'window': self.window
         }, context_instance=RequestContext(request))
         self.assertMultiLineEqual(response.rendered_content.decode(), expected_html)
+
+    def test_manage_page_render_mimic_form_template(self):
+        response = self.client.get(self.manage_mimic_url)
+        self.assertTemplateUsed(response, 'mimics/mimic_manage_form.html')
 
     def test_add_mimic_can_save_a_post_request(self):
         self.client.post(self.manage_mimic_url, data={'window': self.window.pk})
@@ -75,4 +79,3 @@ class MimicManagementTest(TestCase):
         self.assertContains(response, 'Mimic 2')
         self.assertNotContains(response, 'Mimic 3')
         self.assertNotContains(response, 'Mimic 4')
-

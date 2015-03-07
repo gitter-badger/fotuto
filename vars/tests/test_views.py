@@ -1,52 +1,45 @@
 from django.contrib import messages
 from django.core.urlresolvers import resolve
-from django.http import HttpRequest
-from django.template import RequestContext
-from django.template.loader import render_to_string
 from django.test import TestCase
-from django.views.generic import CreateView
 from vars.forms import VarForm, DeviceForm
 from vars.models import Device, Var
-from vars.views import VarCreateView, DeviceCreateView
 
 
 class DeviceAddTest(TestCase):
     maxDiff = None
+    device_add_url = '/devices/add/'
 
     def test_add_url_resolves_to_create_view(self):
-        found = resolve('/devices/add/')
-        self.assertTrue(found.func, CreateView)
+        found = resolve(self.device_add_url)
+        self.assertEqual(found.func.func_name, 'DeviceCreateView')
 
-    def test_add_device_returns_correct_html(self):
-        request = HttpRequest()
-        request.method = 'GET'
-        generic_add_device_view = DeviceCreateView(model=Device)
-        generic_add_device_view.request = request
-        response = generic_add_device_view.dispatch(request)
-        self.assertEqual(response.status_code, 200)
-        expected_html = render_to_string('vars/device_form.html', {'form': DeviceForm()},
-            context_instance=RequestContext(request))
-        self.assertMultiLineEqual(response.rendered_content.decode(), expected_html)
+    def test_add_page_render_device_form_template(self):
+        response = self.client.get(self.device_add_url)
+        self.assertTemplateUsed(response, 'vars/device_form.html')
+
+    def test_add_page_uses_device_form(self):
+        response = self.client.get(self.device_add_url)
+        self.assertIsInstance(response.context['form'], DeviceForm)
 
     def test_add_device_can_save_a_post_request(self):
-        self.client.post('/devices/add/', data={'name': 'Device 1 name', 'address': '1234'})
+        self.client.post(self.device_add_url, data={'name': 'Device 1 name', 'address': '1234'})
         self.assertEqual(Device.objects.count(), 1)
         new_device = Device.objects.first()
         self.assertEqual(new_device.name, 'Device 1 name')
 
     def test_add_device_message(self):
-        response = self.client.post('/devices/add/', data={'name': 'Device 1 name', 'address': '1234'})
+        response = self.client.post(self.device_add_url, data={'name': 'Device 1 name', 'address': '1234'})
         messages_list = list(messages.get_messages(response.wsgi_request))
         self.assertEqual(len(messages_list), 1)
         self.assertEqual(messages_list[0].level_tag, 'success')
         self.assertIn(messages_list[0].message, 'Device was added.')
 
     def test_add_device_page_redirects_after_POST(self):
-        response = self.client.post('/devices/add/', data={'name': 'Device 1 name', 'address': '1234'})
+        response = self.client.post(self.device_add_url, data={'name': 'Device 1 name', 'address': '1234'})
         self.assertRedirects(response, '/devices/')
 
     def test_add_device_print_message(self):
-        response = self.client.post('/devices/add/', data={'name': 'Device 1 name', 'address': '1234'})
+        response = self.client.post(self.device_add_url, data={'name': 'Device 1 name', 'address': '1234'})
         response_redirected = self.client.get(response.url)
         self.assertIn('Device was added.', response_redirected.rendered_content)
 
@@ -78,19 +71,28 @@ class DeviceListTest(TestCase):
 
 class VarAddTest(TestCase):
     maxDiff = None
+    var_add_url = '/vars/add/'
 
     def setUp(self):
         # a device is required for a var
         self.device, create = Device.objects.get_or_create(name="Device 1", slug="device-1", model="111", address="123")
 
     def test_add_url_resolves_to_create_view(self):
-        found = resolve('/vars/add/')
-        self.assertTrue(found.func, VarCreateView)
+        found = resolve(self.var_add_url)
+        self.assertEqual(found.func.func_name, 'VarCreateView')
+
+    def test_add_page_render_var_form_template(self):
+        response = self.client.get(self.var_add_url)
+        self.assertTemplateUsed(response, 'vars/var_form.html')
+
+    def test_add_page_uses_var_form(self):
+        response = self.client.get(self.var_add_url)
+        self.assertIsInstance(response.context['form'], VarForm)
 
     def test_add_var_require_device_create_message(self):
         # Remove all devices
         Device.objects.all().delete()
-        response = self.client.get('/vars/add/')
+        response = self.client.get(self.var_add_url)
         messages_list = list(messages.get_messages(response.wsgi_request))
         self.assertEqual(len(messages_list), 1)
         self.assertEqual(messages_list[0].level_tag, 'info')
@@ -99,46 +101,35 @@ class VarAddTest(TestCase):
     def test_add_var_require_device_redirect(self):
         # Remove all devices
         Device.objects.all().delete()
-        response = self.client.get('/vars/add/')
+        response = self.client.get(self.var_add_url)
         self.assertRedirects(response, '/devices/add/')
 
     def test_add_var_require_device_print_message(self):
         # Remove all devices
         Device.objects.all().delete()
-        response = self.client.get('/vars/add/')
+        response = self.client.get(self.var_add_url)
         response_redirected = self.client.get(response.url)
         self.assertIn('Please, add a device first.', response_redirected.rendered_content)
 
-    def test_add_var_returns_correct_html(self):
-        request = HttpRequest()
-        request.method = 'GET'
-        generic_add_var_view = VarCreateView()
-        generic_add_var_view.request = request
-        response = generic_add_var_view.dispatch(request)
-        self.assertEqual(response.status_code, 200)
-        expected_html = render_to_string('vars/var_form.html', {'form': VarForm()},
-            context_instance=RequestContext(request))
-        self.assertMultiLineEqual(response.rendered_content.decode(), expected_html)
-
     def test_add_var_can_save_a_post_request(self):
-        self.client.post('/vars/add/', data={'name': 'Var 1 name', 'device': self.device.pk})
+        self.client.post(self.var_add_url, data={'name': 'Var 1 name', 'device': self.device.pk})
         self.assertEqual(Var.objects.count(), 1)
         new_var = Var.objects.first()
         self.assertEqual(new_var.name, 'Var 1 name')
 
     def test_add_var_page_redirects_after_POST(self):
-        response = self.client.post('/vars/add/', data={'name': 'Var 1 name', 'device': self.device.pk})
+        response = self.client.post(self.var_add_url, data={'name': 'Var 1 name', 'device': self.device.pk})
         self.assertRedirects(response, '/vars/')
 
     def test_add_var_message(self):
-        response = self.client.post('/vars/add/', data={'name': 'Var 1 name', 'device': self.device.pk})
+        response = self.client.post(self.var_add_url, data={'name': 'Var 1 name', 'device': self.device.pk})
         messages_list = list(messages.get_messages(response.wsgi_request))
         self.assertEqual(len(messages_list), 1)
         self.assertEqual(messages_list[0].level_tag, 'success')
         self.assertIn(messages_list[0].message, 'Variable was added.')
 
     def test_add_var_print_message(self):
-        response = self.client.post('/vars/add/', data={'name': 'Var 1 name', 'device': self.device.pk})
+        response = self.client.post(self.var_add_url, data={'name': 'Var 1 name', 'device': self.device.pk})
         response_redirected = self.client.get(response.url)
         self.assertIn('Variable was added.', response_redirected.rendered_content)
 

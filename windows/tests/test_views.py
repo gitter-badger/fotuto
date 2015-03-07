@@ -5,16 +5,15 @@ from django.template import RequestContext
 from django.template.loader import render_to_string
 from django.test import TestCase
 from django.utils.datetime_safe import datetime
-from django.views.generic import CreateView
 from windows.forms import WindowForm
 from windows.models import Window
-from windows.views import WindowDetailView, WindowDefaultView, WindowCreateView
+from windows.views import WindowDetailView
 
 
 class HomePageTest(TestCase):
     def test_root_url_resolves_to_homepage_view(self):
         found = resolve('/')
-        self.assertTrue(found.func, WindowDefaultView)
+        self.assertEqual(found.func.func_name, 'WindowDefaultView')
 
     def test_root_no_window_redirect_to_add_window(self):
         response = self.client.post('/')
@@ -35,48 +34,48 @@ class HomePageTest(TestCase):
 
 class WindowAddTest(TestCase):
     maxDiff = None
+    window_add_url = '/windows/add/'
 
     def test_add_url_resolves_to_create_view(self):
-        found = resolve('/windows/add/')
-        self.assertTrue(found.func, CreateView)
+        found = resolve(self.window_add_url)
+        self.assertEqual(found.func.func_name, 'WindowCreateView')
 
-    def test_add_window_returns_correct_html(self):
-        request = HttpRequest()
-        request.method = 'GET'
-        generic_add_window_view = WindowCreateView(model=Window)
-        generic_add_window_view.request = request
-        response = generic_add_window_view.dispatch(request)
-        self.assertEqual(response.status_code, 200)
-        expected_html = render_to_string('windows/window_form.html', {'form': WindowForm()},
-            context_instance=RequestContext(request))
-        self.assertMultiLineEqual(response.rendered_content.decode(), expected_html)
+    def test_add_page_render_window_form_template(self):
+        response = self.client.get(self.window_add_url)
+        self.assertTemplateUsed(response, 'windows/window_form.html')
+
+    def test_add_page_uses_window_form(self):
+        response = self.client.get(self.window_add_url)
+        self.assertIsInstance(response.context['form'], WindowForm)
 
     def test_add_window_can_save_a_post_request(self):
-        self.client.post('/windows/add/', data={'title': 'Window 1 title'})
+        self.client.post(self.window_add_url, data={'title': 'Window 1 title'})
         self.assertEqual(Window.objects.count(), 1)
         new_window = Window.objects.first()
         self.assertEqual(new_window.title, 'Window 1 title')
 
     def test_add_window_message(self):
-        response = self.client.post('/windows/add/', data={'title': 'Window 1 title'})
+        response = self.client.post(self.window_add_url, data={'title': 'Window 1 title'})
         messages_list = list(messages.get_messages(response.wsgi_request))
         self.assertEqual(len(messages_list), 1)
         self.assertEqual(messages_list[0].level_tag, 'success')
         self.assertIn(messages_list[0].message, 'Window was added.')
 
     def test_add_window_page_redirects_after_POST(self):
-        response = self.client.post('/windows/add/', data={'title': 'Window 1 title'})
+        response = self.client.post(self.window_add_url, data={'title': 'Window 1 title'})
         self.assertRedirects(response, '/windows/')
 
     def test_add_window_print_message(self):
-        response = self.client.post('/windows/add/', data={'title': 'Window 1 title'})
+        response = self.client.post(self.window_add_url, data={'title': 'Window 1 title'})
         response_redirected = self.client.get(response.url)
         self.assertIn('Window was added.', response_redirected.rendered_content)
 
+    # TODO: Pass this to tests/test_forms.py
     def test_autogenerate_slug_field(self):
         window = self.save_window_form(title="Some Window Title")
         self.assertEqual(window.slug, 'some-window-title')
 
+    # TODO: Pass this to tests/test_forms.py
     def test_autogenerate_slug_field_must_be_unique(self):
         window_title = "Unique title"
 
