@@ -2,7 +2,7 @@
 
 {% block title %}Devices{% endblock %}
 
-{% block header_text %}Devices{% endblock %}
+{% block header_text %}<i class="fa fa-hdd-o"></i> Devices{% endblock %}
 
 {% block breadcrums %}
 	<li class="active">Devices</li>
@@ -17,20 +17,26 @@
 		<tr>
 			<th>Name</th>
 			<th>Address</th>
+			<th>Visible</th>
+			<th>Model</th>
+			<th>Description</th>
 			<th>Actions</th>
 		</tr>
 		{% for device in device_list %}
-			<tr>
+			<tr class="{{ device.active|yesno:',text-muted' }}">
 				<td>{{ device.name }}</td>
 				<td>{{ device.address }}</td>
-				<td>
+				<td><i class="text-{{ device.active|yesno:'success,danger' }} fa fa-eye{{ device.active|yesno:',-slash' }}" title="{{ device.active|yesno:"Active,Inactive" }}"></i></td>
+				<td>{{ device.model }}</td>
+				<td>{{ device.description }}</td>
+				<td class="btn-group-xs">
 					<a href="#" class="btn btn-default" title="Edit"><i class="fa fa-pencil"></i></a>
 					<a href="#" class="btn btn-danger" title="Delete"><i class="fa fa-trash"></i></a>
 				</td>
 			</tr>
 		{% empty %}
 			<tr>
-				<td colspan="3" class="alert alert-warning">No device found.</td>
+				<td colspan="6" class="alert alert-warning">No device found.</td>
 			</tr>
 		{% endfor %}
 	</table>
