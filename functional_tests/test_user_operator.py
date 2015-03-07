@@ -53,6 +53,10 @@ class OperatorTest(FunctionalTest):
         btn_submit = self.browser.find_element_by_css_selector('.btn-primary')
         btn_submit.click()
 
+        # He notes Device list page
+        self.check_page_title_and_header(title="Devices", header="Devices")
+        # He notice breadcrumbs (devices)
+        self.check_breadcrumbs((("Devices",),))
         # He notice the added device confirmation message
         self.check_notification_message("Device was added")
 
@@ -80,6 +84,7 @@ class OperatorTest(FunctionalTest):
         btn_submit.click()
 
         # It is redirected to var list
+        # TODO: Check for title, header and breadcrumbs
         # Confirmation message is shown
         self.check_notification_message("Variable was added")
 

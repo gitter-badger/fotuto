@@ -64,9 +64,27 @@ class DeviceAddTest(TestCase):
 
 
 class DeviceListTest(TestCase):
+    device_list_url = '/devices/'
+
     def test_list_url_resolves_to_list_view(self):
-        found = resolve('/devices/')
+        found = resolve(self.device_list_url)
         self.assertEqual(found.func.func_name, 'ListView')
+
+    def test_uses_list_template(self):
+        response = self.client.get(self.device_list_url)
+        self.assertTemplateUsed(response, 'vars/device_list.html')
+
+    def test_displays_no_devices_message(self):
+        response = self.client.get(self.device_list_url)
+        self.assertContains(response, "No device found.")
+
+    def test_displays_devices(self):
+        Device.objects.create(name="Device 1", slug='dev1', address='1')
+        Device.objects.create(name="Device 2", slug='dev2', address='2')
+        response = self.client.get(self.device_list_url)
+        self.assertEqual(list(response.context['object_list']), list(Device.objects.all()))
+        self.assertContains(response, "Device 1")
+        self.assertContains(response, "Device 2")
 
 
 class VarAddTest(TestCase):

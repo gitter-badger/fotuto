@@ -1,1 +1,37 @@
 {% extends 'base.html' %}
+
+{% block title %}Devices{% endblock %}
+
+{% block header_text %}Devices{% endblock %}
+
+{% block breadcrums %}
+	<li class="active">Devices</li>
+{% endblock %}
+
+{% block content %}
+	<!-- TODO: Crate block for toolbar (quick actions) in base template and move following button to it-->
+	<p class="pull-right">
+		<a href="{% url 'device_add' %}" class="btn btn-primary"><i class="fa fa-plus-square"></i> Add Device</a>
+	</p>
+	<table class="table">
+		<tr>
+			<th>Name</th>
+			<th>Address</th>
+			<th>Actions</th>
+		</tr>
+		{% for device in device_list %}
+			<tr>
+				<td>{{ device.name }}</td>
+				<td>{{ device.address }}</td>
+				<td>
+					<a href="#" class="btn btn-default" title="Edit"><i class="fa fa-pencil"></i></a>
+					<a href="#" class="btn btn-danger" title="Delete"><i class="fa fa-trash"></i></a>
+				</td>
+			</tr>
+		{% empty %}
+			<tr>
+				<td colspan="3" class="alert alert-warning">No device found.</td>
+			</tr>
+		{% endfor %}
+	</table>
+{% endblock %}

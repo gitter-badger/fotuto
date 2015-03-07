@@ -11,6 +11,9 @@ class Device(models.Model):
     address = models.CharField(max_length=16, unique=True)
     description = models.CharField(max_length=255, blank=True)
 
+    class Meta:
+        ordering = ('pk',)
+
     def __unicode__(self):
         return self.name
 

@@ -32,6 +32,12 @@ class DeviceModelTest(ModelTestHelper):
     def test_string_representation(self):
         self.check_string_representation("Device Name", name="Device Name", address='1')
 
+    def test_list_ordering(self):
+        dev1 = Device.objects.create(name="2", slug='dev2', address='2')
+        dev2 = Device.objects.create(name="Dev 1", slug='dev1', address='1')
+        dev3 = Device.objects.create(name="D3", slug='dev3', address='3')
+        self.assertEqual(list(Device.objects.all()), [dev1, dev2, dev3])
+
 
 class VarModelTest(ModelTestHelper):
     model = Var
