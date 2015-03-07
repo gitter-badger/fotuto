@@ -19,3 +19,6 @@ class WindowModelTest(ModelTestHelper):
     def test_get_absolute_url(self):
         window = Window.objects.create(title="Some Window Title", slug="win")
         self.assertEqual(window.get_absolute_url(), '/windows/%s/' % (window.slug,))
+
+    def test_string_representation(self):
+        self.check_string_representation(Window, "Some Window Title", title="Some Window Title")

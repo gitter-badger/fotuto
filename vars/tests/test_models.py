@@ -27,6 +27,9 @@ class DeviceModelTest(ModelTestHelper):
         dev2 = {'name': "Second Device Name", 'slug': 'dev2'}
         self.check_unique_field(model=Device, unique_field='address', obj1_dict=dev1, obj2_dict=dev2)
 
+    def test_string_representation(self):
+        self.check_string_representation(Device, "Device Name", name="Device Name", address='1')
+
 
 class VarModelTest(ModelTestHelper):
     def setUp(self):
@@ -51,3 +54,8 @@ class VarModelTest(ModelTestHelper):
 
     def test_require_device(self):
         self.check_require_field(model=Var, required_field='device', error_key='null', name="Var Name", slug='var1')
+
+    def test_string_representation(self):
+        var_name_attr = "Var name"
+        var_name = "[%s] %s" % (self.device.slug, var_name_attr)
+        self.check_string_representation(Var, var_name, name=var_name_attr, device=self.device)

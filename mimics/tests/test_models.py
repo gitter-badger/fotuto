@@ -16,3 +16,6 @@ class MimicModelTest(ModelTestHelper):
 
     def test_require_window(self):
         self.check_require_field(model=Mimic, required_field='window', error_key='null')
+
+    def test_string_representation(self):
+        self.check_string_representation(Mimic, "Some Mimic Name", name="Some Mimic Name", window=self.window)

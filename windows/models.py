@@ -11,5 +11,8 @@ class Window(models.Model):
     # TODO: Add image field for background
     description = models.CharField(max_length=256, blank=True)
 
+    def __unicode__(self):
+        return self.title
+
     def get_absolute_url(self):
         return reverse('window_details', args=(self.slug,))

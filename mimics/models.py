@@ -11,3 +11,6 @@ class Mimic(models.Model):
     x = models.SmallIntegerField(null=True, blank=True, default=0)
     y = models.SmallIntegerField(null=True, blank=True, default=0)
     # TODO: Add image field
+
+    def __unicode__(self):
+        return self.name

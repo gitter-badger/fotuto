@@ -11,6 +11,9 @@ class Device(models.Model):
     address = models.CharField(max_length=16, unique=True)
     description = models.CharField(max_length=255, blank=True)
 
+    def __unicode__(self):
+        return self.name
+
 
 class Var(models.Model):
     TYPE_CHOCES = (
@@ -28,3 +31,6 @@ class Var(models.Model):
     value = models.FloatField(blank=True, null=True, default=0)
     description = models.CharField(max_length=255, blank=True)
     # TODO: Add magnitude
+
+    def __unicode__(self):
+        return '[%s] %s' % (self.device.slug, self.name)

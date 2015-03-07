@@ -3,7 +3,7 @@ from django.test import TestCase
 
 
 class ModelTestHelper(TestCase):
-    """Abstract class with helper methods for test models."""
+    """Base class with helper methods for test models."""
 
     def check_save_validation(self, model, field_name, error_key='blank'):
         """
@@ -85,3 +85,15 @@ class ModelTestHelper(TestCase):
         main_key = obj1_dict.keys()[0]
         self.assertEqual(getattr(save_obj1, main_key), obj1_dict[main_key])
         self.assertEqual(getattr(save_obj2, main_key), obj2_dict[main_key])
+
+    def check_string_representation(self, model, text, **kwargs):
+        """
+        Checks for model string representation.
+
+        :param model: Model to check
+        :param text: Expected text for model string representation
+        :param kwargs: Params for Model creation
+        """
+
+        obj = model.objects.create(**kwargs)
+        self.assertEqual(str(obj), text)
