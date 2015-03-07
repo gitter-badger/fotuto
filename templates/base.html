@@ -60,16 +60,19 @@
 	</div>
 	<!-- /.container-fluid -->
 </nav>
-<div class="container-fluid">
-	<div class="page-header">
-		<div class="pull-right">{% block toolsbar %}{% endblock %}</div>
-		<h1>{% block header_text %}Home{% endblock %}</h1>
-	</div>
+
 	<div id="breadcrumbs">
 		<ol class="breadcrumb">
-			<li><a href="#">Home</a></li>
+			<li><a href="/">Home</a></li>
 			{% block breadcrums %}{% endblock %}
 		</ol>
+	</div>
+<div class="container-fluid">
+
+
+	<div class="page-header">
+		<div class="pull-right btn-group">{% block toolsbar %}{% endblock %}</div>
+		<h1>{% block header_text %}Home{% endblock %}</h1>
 	</div>
 
 	{% if messages %}

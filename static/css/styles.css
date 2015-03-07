@@ -1,3 +1,13 @@
+/* Bootstrap customizations */
+
 body {
 	padding-top: 50px;
+}
+
+.breadcrumb {
+	margin-bottom: 0;
+}
+
+.page-header {
+	margin-top: 0;
 }

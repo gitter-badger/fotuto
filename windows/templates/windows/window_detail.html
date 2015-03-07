@@ -2,23 +2,37 @@
 
 {% block title %}{{ window.title }}{% endblock %}
 
-{% block header_text %}{{ window.title }}{% endblock %}
+{% block header_text %}<i class="fa fa-desktop"></i> {{ window.title }}{% if window.description %}
+	<small>/ {{ window.description }}</small>{% endif %}{% endblock %}
 
 {% block breadcrums %}
-    <li><a href="{% url 'window_list' %}">Windows</a></li>
-    <li class="active">{{ window.title }}</li>
+	<li><a href="{% url 'window_list' %}">Windows</a></li>
+	<li class="active">{{ window.title }}</li>
+{% endblock %}
+
+{% block toolsbar %}
+	<span class="btn btn-toolbar" href="#" id="last_updated_notificaion">Updated: <span class="value">{{ timestamp|date:'Y-m-d @ H:i:s' }}</span></span>
+	<a href="#" class="btn btn-default"><i class="fa fa-refresh"></i> Update</a>
+	<a href="{% url 'mimic_manage_window' window.slug %}" class="btn btn-default"><i class="fa fa-dashboard"></i>
+		Mimics</a>
+	<a href="#" class="btn btn-default"><i class="fa fa-pencil"></i> Edit</a>
+	<a href="#" class="btn btn-danger"><i class="fa fa-trash"></i> Delete</a>
 {% endblock %}
 
 {% block content %}
-    <div id="last_updated_notificaion">Last updated: <span class="value">{{ timestamp|date:'Y-m-d @ H:i:s' }}</span></div>
-    {% for mimic in window.mimics.all %}
-        <div class="mimic">
-            <h3 class="name">{{ mimic.name }}</h3>
-            <ul class="vars">
-                {% for var in mimic.vars.all %}
-                    <li class="var" title="{{ var.name }}">{{ var.value }}</li>
-                {% endfor %}
-            </ul>
-        </div>
-    {% endfor %}
+	{% for mimic in window.mimics.all %}
+		<div class="col-md-2">
+		<div class="panel panel-info mimic">
+			<div class="panel-heading name">{{ mimic.name }}&nbsp;</div>
+			<ul class="list-group">
+				{% for var in mimic.vars.all %}
+					<li class="list-group-item var">
+						<span class="badge value">{{ var.value }}</span>
+						{{ var.name }}
+					</li>
+				{% endfor %}
+			</ul>
+		</div>
+		</div>
+	{% endfor %}
 {% endblock %}

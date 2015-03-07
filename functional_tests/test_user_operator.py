@@ -50,7 +50,7 @@ class OperatorTest(FunctionalTest):
         input_name.send_keys('1234')
 
         # Submit form to add device
-        btn_submit = self.browser.find_element_by_css_selector('.btn-primary')
+        btn_submit = self.browser.find_element_by_css_selector('button.btn-primary')
         btn_submit.click()
 
         # He notes Device list page
@@ -80,7 +80,7 @@ class OperatorTest(FunctionalTest):
         input_var_value.send_keys('1.0')
 
         # Submit form to add var
-        btn_submit = self.browser.find_element_by_css_selector('.btn-primary')
+        btn_submit = self.browser.find_element_by_css_selector('button.btn-primary')
         btn_submit.click()
 
         # It is redirected to var list
@@ -112,7 +112,7 @@ class OperatorTest(FunctionalTest):
         input_title.send_keys(window_title)
 
         # Submit form to add window
-        btn_submit = self.browser.find_element_by_css_selector('.btn-primary')
+        btn_submit = self.browser.find_element_by_css_selector('button.btn-primary')
         btn_submit.click()
 
         # Now he is in windows list page
@@ -141,7 +141,7 @@ class OperatorTest(FunctionalTest):
         # TODO: Enter position values and check them in window details page
 
         # Submit form to add mimic to window
-        btn_submit = self.browser.find_element_by_css_selector('.btn-primary')
+        btn_submit = self.browser.find_element_by_css_selector('button.btn-primary')
         btn_submit.click()
 
         # TODO: Add mimic from device (use name and vars from device)
@@ -160,12 +160,12 @@ class OperatorTest(FunctionalTest):
 
         # Then mimic for device with new variable is shown
         mimic_name_html = self.browser.find_elements_by_css_selector('.mimic .name')[0].text
-        self.assertEqual(mimic_name_html, mimic_name)
+        self.assertIn(mimic_name, mimic_name_html)
 
         # A variable value indicator and variable's name is shown
         var_item = self.browser.find_elements_by_css_selector('.mimic .var')[0]
-        self.assertEqual("1.0", var_item.text)
-        self.assertEqual(var_name, var_item.get_attribute('title'))
+        self.assertIn(var_name, var_item.text)
+        self.assertEqual("1.0", var_item.find_element_by_class_name('value').text)
 
         # Last update timestamp is shown in page
         last_update_text = self.browser.find_element_by_css_selector('#last_updated_notificaion .value').text
