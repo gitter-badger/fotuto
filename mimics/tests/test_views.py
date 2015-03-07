@@ -1,12 +1,8 @@
 from django.contrib import messages
 from django.core.urlresolvers import resolve
-from django.http import HttpRequest
-from django.template.context import RequestContext
-from django.template.loader import render_to_string
 from django.test import TestCase
 from mimics.forms import MimicManageForm
 from mimics.models import Mimic
-from mimics.views import MimicManageView
 from windows.models import Window
 
 
@@ -19,29 +15,37 @@ class MimicManagementTest(TestCase):
         self.manage_mimic_url = '/windows/%s/mimics/manage/' % self.window.slug
 
     # TODO: Test add vars in mimic
-    # TODO: Test template used
+    # TODO: Use formset?
 
     def test_add_url_resolves_to_create_view(self):
         found = resolve(self.manage_mimic_url)
         self.assertEqual(found.func.func_name, 'MimicManageView')
 
-    def test_manage_mimic_returns_correct_html(self):
-        request = HttpRequest()
-        request.method = 'GET'
-        generic_add_var_view = MimicManageView()
-        generic_add_var_view.request = request
-        generic_add_var_view.kwargs = {'window': self.window.slug}
-        response = generic_add_var_view.dispatch(request)
-        self.assertEqual(response.status_code, 200)
-        expected_html = render_to_string('mimics/mimic_manage_form.html', {
-            'form': MimicManageForm(initial={'window': self.window.pk}),
-            'window': self.window
-        }, context_instance=RequestContext(request))
-        self.assertMultiLineEqual(response.rendered_content.decode(), expected_html)
-
-    def test_manage_page_render_mimic_form_template(self):
+    def test_uses_manage_template(self):
         response = self.client.get(self.manage_mimic_url)
         self.assertTemplateUsed(response, 'mimics/mimic_manage_form.html')
+
+    def test_displays_mimic_form(self):
+        response = self.client.get(self.manage_mimic_url)
+        self.assertIsInstance(response.context['form'], MimicManageForm)
+        self.assertContains(response, 'name="name"')
+
+    def test_displays_window_object(self):
+        response = self.client.get(self.manage_mimic_url)
+        self.assertEqual(response.context['window'], self.window)
+        self.assertContains(response, self.window.title)
+
+    def test_displays_only_mimics_for_that_windows(self):
+        Mimic.objects.create(name='Mimic 1', window=self.window)
+        Mimic.objects.create(name='Mimic 2', window=self.window)
+        other_window = Window.objects.create(slug="other-win")
+        Mimic.objects.create(name='Mimic 3', window=other_window)
+        Mimic.objects.create(name='Mimic 4', window=other_window)
+        response = self.client.get(self.manage_mimic_url)
+        self.assertContains(response, 'Mimic 1')
+        self.assertContains(response, 'Mimic 2')
+        self.assertNotContains(response, 'Mimic 3')
+        self.assertNotContains(response, 'Mimic 4')
 
     def test_add_mimic_can_save_a_post_request(self):
         self.client.post(self.manage_mimic_url, data={'window': self.window.pk})
@@ -67,15 +71,18 @@ class MimicManagementTest(TestCase):
         response_redirected = self.client.get(response.url)
         self.assertIn('Mimic was added.', response_redirected.rendered_content)
 
-    def test_displays_only_mimics_for_that_windows(self):
-        # TODO: Implement this with model_formset
-        Mimic.objects.create(name='Mimic 1', window=self.window)
-        Mimic.objects.create(name='Mimic 2', window=self.window)
-        other_window = Window.objects.create(slug="other-win")
-        Mimic.objects.create(name='Mimic 3', window=other_window)
-        Mimic.objects.create(name='Mimic 4', window=other_window)
-        response = self.client.get(self.manage_mimic_url)
-        self.assertContains(response, 'Mimic 1')
-        self.assertContains(response, 'Mimic 2')
-        self.assertNotContains(response, 'Mimic 3')
-        self.assertNotContains(response, 'Mimic 4')
+    def test_for_invalid_input_nothing_saved_to_db(self):
+        self.post_invalid_input()
+        self.assertEqual(Mimic.objects.count(), 0)
+
+    def test_for_invalid_input_renders_list_template(self):
+        response = self.post_invalid_input()
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, 'mimics/mimic_manage_form.html')
+
+    def test_for_invalid_input_passes_form_to_template(self):
+        response = self.post_invalid_input()
+        self.assertIsInstance(response.context['form'], MimicManageForm)
+
+    def post_invalid_input(self):
+        return self.client.post(self.manage_mimic_url)

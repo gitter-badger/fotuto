@@ -93,18 +93,20 @@ class WindowAddTest(TestCase):
 
 
 class WindowListTest(TestCase):
+    window_list_url = '/windows/'
+
     def test_list_url_resolves_to_list_view(self):
-        found = resolve('/windows/')
+        found = resolve(self.window_list_url)
         self.assertEqual(found.func.func_name, 'ListView')
 
     def test_uses_template(self):
-        response = self.client.get('/windows/')
+        response = self.client.get(self.window_list_url)
         self.assertTemplateUsed(response, 'windows/window_list.html')
 
     def test_displays_all_windows(self):
         Window.objects.create(title="First Window Title", slug="win1")
         Window.objects.create(title="Second Window Title", slug="win2")
-        response = self.client.get('/windows/')
+        response = self.client.get(self.window_list_url)
         self.assertContains(response, "First Window Title")
         self.assertContains(response, "Second Window Title")
 
