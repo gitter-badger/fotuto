@@ -1,6 +1,5 @@
 from django.contrib.staticfiles.testing import StaticLiveServerTestCase
 from selenium import webdriver
-from selenium.common.exceptions import NoSuchElementException
 import sys
 
 
@@ -73,12 +72,13 @@ class FunctionalTest(StaticLiveServerTestCase):
     def get_menu_item(self, menu_path=None):
         if menu_path is None:
             menu_path = ("Dashboards",)
-        try:
-            return self.browser.find_element_by_link_text(menu_path[-1])
-        except NoSuchElementException:
-            # Display submenu first
-            self.browser.find_element_by_link_text('Dashboards').click()
-            return self.browser.find_element_by_link_text(menu_path[-1])
+        else:
+            submenu = self.browser.find_element_by_css_selector('nav .mimics.dropdown .dropdown-menu')
+            if not submenu.is_displayed():
+                # Display submenu
+                self.browser.find_element_by_link_text('Dashboards').click()
+
+        return self.browser.find_element_by_link_text(menu_path[-1])
 
     def goto_menu_item(self, menu_path):
         self.get_menu_item(menu_path).click()
