@@ -8,12 +8,11 @@
 	<li class="active">Variables</li>
 {% endblock %}
 
-{% block content %}
-	<!-- TODO: Crate block for toolbar (quick actions) in base template and move following button to it-->
-	<p class="pull-right">
-		<a href="{% url 'var_add' %}" class="btn btn-primary"><i class="fa fa-plus-square"></i> Add Variable</a>
-	</p>
+{% block toolsbar %}
+	<a href="{% url 'var_add' %}" class="btn btn-primary"><i class="fa fa-plus-square"></i> Add Var</a>
+{% endblock %}
 
+{% block content %}
 	<table class="table">
 		<tr>
 			<th>Name</th>

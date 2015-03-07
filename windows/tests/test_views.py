@@ -103,6 +103,10 @@ class WindowListTest(TestCase):
         response = self.client.get(self.window_list_url)
         self.assertTemplateUsed(response, 'windows/window_list.html')
 
+    def test_displays_no_windows_message(self):
+        response = self.client.get(self.window_list_url)
+        self.assertContains(response, "No window found.")
+
     def test_displays_all_windows(self):
         Window.objects.create(title="First Window Title", slug="win1")
         Window.objects.create(title="Second Window Title", slug="win2")
