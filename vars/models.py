@@ -20,8 +20,8 @@ class Device(models.Model):
 
 class Var(models.Model):
     TYPE_CHOCES = (
-        ('binary', "Binary"),
-        ('real', "Real"),
+        ('binary', "Digital"),
+        ('real', "Analogic"),
     )
     name = models.CharField(max_length=20)
     slug = models.SlugField(max_length=25, unique=True,
@@ -34,6 +34,9 @@ class Var(models.Model):
     value = models.FloatField(blank=True, null=True, default=0)
     description = models.CharField(max_length=255, blank=True)
     # TODO: Add magnitude
+
+    class Meta:
+        ordering = ('-active', 'device')
 
     def __unicode__(self):
         return '[%s] %s' % (self.device.slug, self.name)

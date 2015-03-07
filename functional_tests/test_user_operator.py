@@ -84,7 +84,9 @@ class OperatorTest(FunctionalTest):
         btn_submit.click()
 
         # It is redirected to var list
-        # TODO: Check for title, header and breadcrumbs
+        self.check_page_title_and_header(title="Variables", header="Variables")
+        # He notice breadcrumbs (vars)
+        self.check_breadcrumbs((("Variables",),))
         # Confirmation message is shown
         self.check_notification_message("Variable was added")
 

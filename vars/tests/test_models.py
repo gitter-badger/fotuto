@@ -69,3 +69,18 @@ class VarModelTest(ModelTestHelper):
         var_name_attr = "Var name"
         var_name = "[%s] %s" % (self.device.slug, var_name_attr)
         self.check_string_representation(var_name, name=var_name_attr, device=self.device)
+
+    def test_list_ordering(self):
+        device2 = Device.objects.create(name="Dev2", slug='dev2', address='2')
+        var1 = Var.objects.create(name="Var 1", slug='v1', active=False, device=self.device)
+        var2 = Var.objects.create(name="2", slug='v2', device=device2)
+        var3 = Var.objects.create(name="2", slug='v3', device=self.device)
+        var4 = Var.objects.create(name="V3", slug='v4', device=self.device)
+        right_ordered_list = [
+            var3,  # first var of first device
+            var4,  # second var of first device
+            var2,  # Second device
+            var1   # Inactive vars at bottom
+        ]
+        self.assertEqual(list(Var.objects.all()), right_ordered_list)
+
