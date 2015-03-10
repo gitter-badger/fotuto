@@ -94,6 +94,8 @@ TEMPLATE_DIRS = (
     os.path.join(BASE_DIR, 'templates'),
 )
 
+LOGIN_REDIRECT_URL = '/'
+
 # django-bootstrap3 settings
 BOOTSTRAP3 = {
     'jquery_url': '%s%s' % (STATIC_URL, 'bower_components/jquery/dist/jquery.min.js'),
