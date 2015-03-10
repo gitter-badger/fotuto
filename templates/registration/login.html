@@ -1,0 +1,11 @@
+{% extends "base_form.html" %}
+
+{% block title %}Sign in{% endblock %}
+
+{% block form_action %}{% url 'django.contrib.auth.views.login' %}{% endblock %}
+
+{% block form_append %}<input type="hidden" name="next" value="{{ next }}" />{% endblock %}
+
+{% block button_class %}btn-login{% endblock %}
+
+{% block button_text %}Login{% endblock %}
