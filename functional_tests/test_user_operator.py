@@ -1,3 +1,5 @@
+from django.contrib.auth.models import User
+from django.contrib.auth.models import Permission
 from django.utils.datetime_safe import datetime
 from selenium.webdriver.common.keys import Keys
 from .base import FunctionalTest
@@ -8,9 +10,27 @@ class OperatorTest(FunctionalTest):
         # A operator go to add var page
         self.browser.get('%s/vars/add/' % self.server_url)
 
-        # A login form is shown
+        # A login form with a message is shown
+        self.check_page_title_and_header(title="Sign In", header="Sign In")
+        # He notice breadcrumbs (Sign in)
+        self.check_breadcrumbs((("Sign In",),))
+        # He notes enter device first notification
+        # TODO: self.check_notification_message("Please, login as an operator to access to this page", 'warning')
+
+        # A user with permission to add var
+        # TODO: Refactor this
+        credentials = {'username': 'operator', 'password': '123'}
+        operator = User.objects.create_user(**credentials)
+        perms = Permission.objects.filter(codename='add_var')
+        operator.user_permissions.add(*perms)
+
         # Operator type his credential and proceed to log-in
-        # TODO: Test login form
+        input_username = self.browser.find_element_by_id('id_username')
+        input_username.send_keys(credentials['username'])
+        input_password = self.browser.find_element_by_id('id_password')
+        input_password.send_keys(credentials['password'])
+        btn_submit = self.browser.find_element_by_css_selector('button.btn-primary')
+        btn_submit.click()
 
         # Check operator menu
         menu = self.get_menu_item()

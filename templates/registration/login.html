@@ -1,6 +1,10 @@
 {% extends "base_form.html" %}
 
-{% block title %}Sign in{% endblock %}
+{% block title %}Sign In{% endblock %}
+
+{% block header_text %}Sign In{% endblock %}
+
+{% block breadcrums %}<li class="active">Sign In</li>{% endblock %}
 
 {% block form_action %}{% url 'django.contrib.auth.views.login' %}{% endblock %}
 
