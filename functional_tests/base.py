@@ -51,9 +51,10 @@ class FunctionalTest(StaticLiveServerTestCase):
         :param message: Text in message
         :param tag: Message tag level in lowercase (default: success)
         """
-        var_added_confirmation = self.browser.find_element_by_class_name('alert')
-        self.assertIn('alert-%s' % tag, var_added_confirmation.get_attribute('class'))
-        self.assertIn(message, var_added_confirmation.text)
+        messages_html_items = self.browser.find_elements_by_class_name('alert')
+        self.assertEqual(len(messages_html_items), 1)
+        self.assertIn('alert-%s' % tag, messages_html_items[0].get_attribute('class'))
+        self.assertIn(message, messages_html_items[0].text)
 
     def check_breadcrumbs(self, items):
         """
