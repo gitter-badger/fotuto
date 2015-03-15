@@ -54,12 +54,14 @@
 				</li>
 				<li><a href="#"><i class="fa fa-area-chart fa-fw"></i> History charts</a></li>
 			</ul>
-			{% if user.is_authenticated %}
-				<p id="welcome" class="navbar-text navbar-right">Welcome <a href="#" class="navbar-link">{{ user.username }}</a>
-					<a href="{% url 'logout' %}">Logout</a></p>
-			{% else %}
-				<a class="btn btn-default navbar-btn navbar-right btn-signin" href="{% url 'login' %}">Sign In</a>
-			{% endif %}
+			<div id="navbar-tray" class="navbar-right">
+				{% if user.is_authenticated %}
+					<p class="navbar-text">Welcome <a href="#" class="navbar-link">{{ user.username }}</a>
+						<a href="{% url 'logout' %}">Logout</a></p>
+				{% else %}
+					<a class="btn btn-default navbar-btn btn-signin" href="{% url 'login' %}">Sign In</a>
+				{% endif %}
+			</div>
 		</div>
 		<!-- /.navbar-collapse -->
 	</div>
