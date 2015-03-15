@@ -1,4 +1,3 @@
-from django.contrib.auth.models import User  # TODO: use setting.AUTH_USER_MODEL
 from selenium.common.exceptions import NoSuchElementException
 from .base import FunctionalTest
 
@@ -10,10 +9,12 @@ class LoginTest(FunctionalTest):
         # Create users to login
         self.supervisor_data = {'username': 'supervisor', 'password': 'demo'}
         self.operator_data = {'username': 'operator', 'password': 'demo'}
-        self.operator = User.objects.create_user(**self.operator_data)
-        self.supervisor = User.objects.create_user(**self.supervisor_data)
+        self.operator = self.create_user_with_permission(**self.operator_data)
+        self.supervisor = self.create_user_with_permission(**self.supervisor_data)
 
     def test_login(self):
+        # TODO: Test wrong credential
+
         # A visitor logs with operator credential
         self.user_login(self.operator_data['username'], self.operator_data['password'])
 
@@ -46,7 +47,12 @@ class LoginTest(FunctionalTest):
         self.assertTrue(btn_signin.is_displayed())
         btn_signin.click()
 
-        # Login form appears and visitor logs with his credential
+        # Login form appears
+        self.check_page_title_and_header(title="Sign In", header="Sign In")
+        # He notice breadcrumbs (Sign in)
+        self.check_breadcrumbs((("Sign In",),))
+
+        # Visitor logs with his credential
         input_user = self.browser.find_element_by_id('id_username')
         input_user.send_keys(username)
         input_pass = self.browser.find_element_by_id('id_password')
@@ -71,9 +77,12 @@ class LoginTest(FunctionalTest):
         self.assertTrue(btn_logout.is_displayed())
 
     def check_user_logged_out(self, username=None):
-        text_in_page = self.browser.find_element_by_tag_name('body').text
-
+        # Logout page is shown
+        self.check_page_title_and_header(title="Logout", header="Logout")
+        # He notice breadcrumbs (Logout)
+        self.check_breadcrumbs((("Logout",),))
         # A logout notification message is shown
+        text_in_page = self.browser.find_element_by_tag_name('body').text
         self.assertIn("You has been logged out successfully.", text_in_page)
 
         # User can't see him as logged

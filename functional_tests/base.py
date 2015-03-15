@@ -1,6 +1,10 @@
+from django.contrib.auth import get_user_model
+from django.contrib.auth.models import Permission
 from django.contrib.staticfiles.testing import StaticLiveServerTestCase
 from selenium import webdriver
 import sys
+
+User = get_user_model()
 
 
 class FunctionalTest(StaticLiveServerTestCase):
@@ -82,3 +86,17 @@ class FunctionalTest(StaticLiveServerTestCase):
 
     def goto_menu_item(self, menu_path):
         self.get_menu_item(menu_path).click()
+
+    def create_user_with_permission(self, permissions=None, **credentials):
+        """
+        Creates a user and add one or more permissions.
+
+        :type permissions: permission codename (or list of codename) to add to user
+        """
+        user = User.objects.create_user(**credentials)
+        if permissions is not None:
+            if not isinstance(permissions, (list, tuple)):
+                permissions = (permissions,)
+            perms = Permission.objects.filter(codename__in=permissions)
+            user.user_permissions.add(*perms)
+        return user
