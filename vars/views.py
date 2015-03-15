@@ -1,7 +1,9 @@
 from django import http
 from django.contrib import messages
+from django.contrib.auth.decorators import permission_required
 from django.contrib.messages.views import SuccessMessageMixin
 from django.core.urlresolvers import reverse_lazy, reverse
+from django.utils.decorators import method_decorator
 from django.views.generic import CreateView
 from vars.forms import VarForm, DeviceForm
 from vars.models import Var, Device
@@ -21,6 +23,7 @@ class VarCreateView(SuccessMessageMixin, CreateView):
     success_url = reverse_lazy('var_list')
     success_message = "Variable was added."
 
+    @method_decorator(permission_required('vars.add_var'))
     def dispatch(self, request, *args, **kwargs):
         if Device.objects.count() == 0:
             messages.info(request, "Please, add a device first.")

@@ -1,9 +1,12 @@
 from django.contrib import messages
+from django.contrib.auth import get_user_model
+from django.contrib.auth.models import Permission
 from django.core.urlresolvers import resolve
 from django.test import TestCase
 from vars.forms import VarForm, DeviceForm
 from vars.models import Device, Var
 
+User = get_user_model()
 
 class DeviceAddTest(TestCase):
     maxDiff = None
@@ -94,10 +97,32 @@ class VarAddTest(TestCase):
     def setUp(self):
         # a device is required for a var
         self.device, create = Device.objects.get_or_create(name="Device 1", slug="device-1", model="111", address="123")
+        # A user with permission to add var
+        self.user_credentials = {'username': 'user1', 'password': '123'}
+        self.user = User.objects.create_user(**self.user_credentials)
+        perms = Permission.objects.filter(codename='add_var')
+        self.user.user_permissions.add(*perms)
+        # Login user
+        self.client.login(**self.user_credentials)
 
     def test_add_url_resolves_to_create_view(self):
         found = resolve(self.var_add_url)
         self.assertEqual(found.func.func_name, 'VarCreateView')
+
+    def test_unlogged_user_redirect(self):
+        self.client.logout()
+        response = self.client.get(self.var_add_url)
+        self.assertRedirects(response, '/login/?next=/vars/add/')
+
+    def test_permission_denied_redirect(self):
+        self.client.logout()
+        # Create and login user without add_var permission
+        user_credentials = {'username': 'not_operator_user', 'password': '123'}
+        User.objects.create_user(**user_credentials)
+        self.client.login(**user_credentials)
+
+        response = self.client.get(self.var_add_url)
+        self.assertRedirects(response, '/login/?next=/vars/add/')
 
     def test_add_page_render_var_form_template(self):
         response = self.client.get(self.var_add_url)
