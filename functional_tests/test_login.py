@@ -56,32 +56,9 @@ class LoginTest(FunctionalTest):
         # User notice he is logged out
         self.check_user_logged_out(self.operator.username)
 
-    def get_signin_button(self):
-        return self.browser.find_element_by_link_text('Sign In')
-
     def get_logout_button(self):
         # TODO: Move logout button to user popup menu
         return self.browser.find_element_by_link_text('Logout')
-
-    def user_login(self, username, password):
-        # A visitor goes to fotuto site and notices a "Sign in" button.
-        self.browser.get(self.server_url)
-        btn_signin = self.get_signin_button()
-        self.assertTrue(btn_signin.is_displayed())
-        btn_signin.click()
-
-        # Login form appears
-        self.check_page_title_and_header(title="Sign In", header="Sign In")
-        # He notice breadcrumbs (Sign in)
-        self.check_breadcrumbs((("Sign In",),))
-
-        # Visitor logs with his credential
-        input_user = self.browser.find_element_by_id('id_username')
-        input_user.send_keys(username)
-        input_pass = self.browser.find_element_by_id('id_password')
-        input_pass.send_keys(password)
-        btn_login = self.browser.find_element_by_css_selector('button.btn-login')
-        btn_login.click()
 
     def user_logout(self):
         btn_logout = self.get_logout_button()

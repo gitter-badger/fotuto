@@ -101,3 +101,26 @@ class FunctionalTest(StaticLiveServerTestCase):
             perms = Permission.objects.filter(codename__in=permissions)
             user.user_permissions.add(*perms)
         return user
+
+    def user_login(self, username, password):
+        # A visitor goes to fotuto site and notices a "Sign in" button.
+        self.browser.get(self.server_url)
+        btn_signin = self.get_signin_button()
+        self.assertTrue(btn_signin.is_displayed())
+        btn_signin.click()
+
+        # Login form appears
+        self.check_page_title_and_header(title="Sign In", header="Sign In")
+        # He notice breadcrumbs (Sign in)
+        self.check_breadcrumbs((("Sign In",),))
+
+        # Visitor logs with his credential
+        input_user = self.browser.find_element_by_id('id_username')
+        input_user.send_keys(username)
+        input_pass = self.browser.find_element_by_id('id_password')
+        input_pass.send_keys(password)
+        btn_login = self.browser.find_element_by_css_selector('button.btn-login')
+        btn_login.click()
+
+    def get_signin_button(self):
+        return self.browser.find_element_by_link_text('Sign In')
