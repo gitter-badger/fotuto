@@ -2,10 +2,13 @@ from django.contrib import messages
 from django.contrib.messages.views import SuccessMessageMixin
 from django.core.urlresolvers import reverse_lazy, reverse
 from django.utils.datetime_safe import datetime
-from django.views.generic import TemplateView, CreateView, DetailView
+from django.views.generic import CreateView, DetailView
 from django.views.generic.base import RedirectView
-from windows.forms import WindowForm
-from windows.models import Window
+from rest_framework import viewsets
+
+from .forms import WindowForm
+from .models import Window
+from .serializers import WindowSerializer
 
 
 class WindowDefaultView(RedirectView):
@@ -40,3 +43,7 @@ class WindowCreateView(SuccessMessageMixin, CreateView):
     success_url = reverse_lazy('window_list')
     success_message = "Window was added."
 
+
+class WindowViewSet(viewsets.ModelViewSet):
+    queryset = Window.objects.all()
+    serializer_class = WindowSerializer
