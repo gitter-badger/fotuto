@@ -34,6 +34,7 @@ INSTALLED_APPS = (
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'rest_framework',
     'bootstrap3',
     'vars',
     'windows',
@@ -120,4 +121,12 @@ LOGIN_REDIRECT_URL = '/'
 BOOTSTRAP3 = {
     'jquery_url': '%s%s' % (STATIC_URL, 'bower_components/jquery/dist/jquery.min.js'),
     'base_url': '%s%s' % (STATIC_URL, 'bower_components/bootstrap/dist'),
+}
+
+# DRF
+
+REST_FRAMEWORK = {
+    'DEFAULT_PERMISSION_CLASSES': [
+        'rest_framework.permissions.DjangoModelPermissionsOrAnonReadOnly'
+    ]
 }

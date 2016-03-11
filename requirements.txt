@@ -1,2 +1,5 @@
 Django<1.10
 django-bootstrap3
+djangorestframework
+markdown
+django-filter
