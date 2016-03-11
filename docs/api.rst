@@ -22,7 +22,7 @@ Example response
 Add a Window
 ============
 * URL: `/api/windows/`
-* HTTP Method: POST
+* HTTP Method: `POST`
 
 Example Request
 ---------------
