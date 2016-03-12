@@ -2,6 +2,8 @@ from django.contrib.auth import get_user_model
 from django.core.urlresolvers import resolve
 from rest_framework.authtoken.models import Token
 from rest_framework.test import APITestCase
+
+from vars.models import Device
 from windows.models import Window
 
 # TODO: In production API should only available over https
@@ -90,3 +92,54 @@ class WindowAPITestCase(APITestCase):
         response = self.client.post('/api/windows/', data=post_data, format='json', **self.auth_header)
         self.assertEqual(response.status_code, 201, response.data)
         self.assertEqual(response.data, post_data)
+
+
+class DeviceAPITestCase(APITestCase):
+    def setUp(self):
+        self.device_1 = Device.objects.create(
+           name="Some Device 1",
+           slug="some-device-1",
+           active=True,
+           model="AA1",
+           address="0001",
+           description="Some description"
+        )
+        self.device_2 = Device.objects.create(
+           name="Some Device 2",
+           slug="some-device-2",
+           active=True,
+           model="AA2",
+           address="0002",
+           description="Some description 2"
+        )
+        self.user = User.objects.create_user('user', 'user@mail.com', '123')
+        self.token = Token.objects.get_or_create(user=self.user)[0].key
+        self.auth_header = {'HTTP_AUTHORIZATION': 'Token {}'.format(self.token)}
+
+    def test_list_device(self):
+        """Test that we can get a list of Devices"""
+        response = self.client.get('/api/devices/', **self.auth_header)
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.data[0]['name'], "Some Device 1")
+        self.assertEqual(response.data[1]['address'], "0002")
+
+    def test_devices_list_route(self):
+        """Test that we've got routing set up for Device"""
+        route = resolve('/api/devices/')
+        self.assertEqual(route.func.__name__, 'DeviceViewSet')
+
+    def test_create_device(self):
+        """Test that we can create a Device"""
+        device_data = {
+           'name': "Some Device",
+           'slug': "some-device",
+           'active': True,
+           'model': "AA3",
+           'address': "0003",
+           'description': "Some description",
+        }
+        response = self.client.post('/api/devices/', data=device_data, format='json', **self.auth_header)
+        self.assertEqual(response.status_code, 201, response.data)
+        created_device = Device.objects.get(**device_data)
+        device_data.update({'id': created_device.pk})
+        self.assertDictEqual(response.data, device_data)

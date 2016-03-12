@@ -5,8 +5,11 @@ from django.contrib.messages.views import SuccessMessageMixin
 from django.core.urlresolvers import reverse_lazy, reverse
 from django.utils.decorators import method_decorator
 from django.views.generic import CreateView
-from vars.forms import VarForm, DeviceForm
-from vars.models import Var, Device
+from rest_framework import viewsets
+
+from .forms import VarForm, DeviceForm
+from .models import Var, Device
+from .serializers import DeviceSerializer
 
 
 class DeviceCreateView(SuccessMessageMixin, CreateView):
@@ -29,3 +32,8 @@ class VarCreateView(SuccessMessageMixin, CreateView):
             messages.info(request, "Please, add a device first.")
             return http.HttpResponseRedirect(reverse('device_add'))
         return super(VarCreateView, self).dispatch(request, *args, **kwargs)
+
+
+class DeviceViewSet(viewsets.ModelViewSet):
+    queryset = Device.objects.all()
+    serializer_class = DeviceSerializer
