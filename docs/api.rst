@@ -48,7 +48,7 @@ Example Response
 Get Device
 ==========
 
-* URL: `/api/device/<pk>/`
+* URL: `/api/devices/<pk>/`
 * HTTP Method: `GET`
 
 Example response
@@ -67,7 +67,7 @@ Example response
 
 Add a Device
 ============
-* URL: `/api/device/`
+* URL: `/api/devices/`
 * HTTP Method: `POST`
 
 Example Request
@@ -94,4 +94,63 @@ Example Response
        "model": "AA1",
        "address": "0001",
        "description": "Some description"
+   }
+
+Get Variable
+============
+
+* URL: `/api/vars/<pk>/`
+* HTTP Method: `GET`
+
+Example response
+----------------
+.. code::
+
+   {
+       "id": 1,
+       "name": "Door 1",
+       "slug": "door-1",
+       "active": true,
+       "device": 1,
+       "var_type": "binary",
+       "units": "",
+       "value": 1,
+       "description": "Door 1 state: 1=Open, 0=Closed"
+   }
+
+
+Add a Variable
+==============
+* URL: `/api/vars/`
+* HTTP Method: `POST`
+
+Example Request
+---------------
+.. code::
+
+   {
+       "name": "Door 1",
+       "slug": "door-1",
+       "active": true,
+       "device": 1,
+       "var_type": "binary",
+       "units": "",
+       "value": 1,
+       "description": "Door 1 state: 1=Open, 0=Closed"
+   }
+
+Example Response
+----------------
+.. code::
+
+   {
+       "id": 1,
+       "name": "Door 1"1,
+       "slug": "door-1",
+       "active": true,
+       "device": 1,
+       "var_type": "binary",
+       "units": "",
+       "value": 1,
+       "description": "Door 1 state: 1=Open, 0=Closed"
    }

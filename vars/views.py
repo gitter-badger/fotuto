@@ -9,7 +9,7 @@ from rest_framework import viewsets
 
 from .forms import VarForm, DeviceForm
 from .models import Var, Device
-from .serializers import DeviceSerializer
+from .serializers import DeviceSerializer, VarSerializer
 
 
 class DeviceCreateView(SuccessMessageMixin, CreateView):
@@ -37,3 +37,8 @@ class VarCreateView(SuccessMessageMixin, CreateView):
 class DeviceViewSet(viewsets.ModelViewSet):
     queryset = Device.objects.all()
     serializer_class = DeviceSerializer
+
+
+class VarViewSet(viewsets.ModelViewSet):
+    queryset = Var.objects.all()
+    serializer_class = VarSerializer

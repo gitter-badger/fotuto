@@ -1,5 +1,5 @@
 from unittest import TestCase
-from vars.serializers import DeviceSerializer
+from vars.serializers import DeviceSerializer, VarSerializer
 
 
 class DeviceSerializerTestCase(TestCase):
@@ -13,4 +13,18 @@ class DeviceSerializerTestCase(TestCase):
         self.assertEqual(data, {
             'name': 'A Device',
             'slug': 'a-device'
+        })
+
+
+class VarSerializerTestCase(TestCase):
+    def test_validate(self):
+        """
+        Tests that VarSerializer.validate() adds a slugged
+        version of the name attribute to the data
+        """
+        serializer = VarSerializer()
+        data = serializer.validate({'name': 'Alarm State'})
+        self.assertEqual(data, {
+            'name': 'Alarm State',
+            'slug': 'alarm-state'
         })
