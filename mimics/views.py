@@ -2,8 +2,11 @@ from django.contrib.messages.views import SuccessMessageMixin
 from django.core.urlresolvers import reverse
 from django.shortcuts import get_object_or_404
 from django.views.generic import CreateView
-from mimics.forms import MimicManageForm
-from mimics.models import Mimic
+from rest_framework import viewsets
+
+from .forms import MimicManageForm
+from .models import Mimic
+from .serializers import MimicSerializer
 from windows.models import Window
 
 
@@ -29,3 +32,8 @@ class MimicManageView(SuccessMessageMixin, CreateView):
         context = super(MimicManageView, self).get_context_data(**kwargs)
         context['window'] = self.window
         return context
+
+
+class MimicViewSet(viewsets.ModelViewSet):
+    queryset = Mimic.objects.all()
+    serializer_class = MimicSerializer

@@ -145,7 +145,7 @@ Example Response
 
    {
        "id": 1,
-       "name": "Door 1"1,
+       "name": "Door 1",
        "slug": "door-1",
        "active": true,
        "device": 1,
@@ -153,4 +153,71 @@ Example Response
        "units": "",
        "value": 1,
        "description": "Door 1 state: 1=Open, 0=Closed"
+   }
+
+Get Mimic
+=========
+
+* URL: `/api/mimic/<pk>/`
+* HTTP Method: `GET`
+
+Example response
+----------------
+.. code::
+
+   {
+       "id": 1,
+       "name": "Front Door Sensor",
+       "vars": [
+           {
+               "id": 1,
+               "name": "Door 1",
+               "var_type": "binary",
+               "units": "",
+               "value": 1,
+               "description": "Door 1 state: 1=Open, 0=Closed"
+           }
+       ],
+       "window": 1,
+       "x": 0,
+       "y": 0
+   }
+
+Add a Variable
+==============
+* URL: `/api/mimics/`
+* HTTP Method: `POST`
+
+Example Request
+---------------
+.. code::
+
+   {
+       "name": "Front Door Sensor",
+       "vars": [1,2],
+       "window": 1,
+       "x": 0,
+       "y": 0
+   }
+
+Example Response
+----------------
+.. code::
+
+   {
+       "id": 1,
+       "name": "Front Door Sensor",
+       "vars": [
+           {
+               "id": 1,
+               "name": "Door 1",
+               "var_type": "binary",
+               "units": "",
+               "value": 1,
+               "description": "Door 1 state: 1=Open, 0=Closed"
+           }
+       ],
+       "window": 1,
+       "x": 0,
+       "y": 0
    }
