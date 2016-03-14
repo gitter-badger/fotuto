@@ -15,6 +15,7 @@ before_script:
   - pip install codecov
   - psql -c 'create database fotuto;' -U postgres
   - cp fotuto/settings_local.py.example fotuto/settings_local.py
+  - export DJANGO_SETTINGS_MODULE=fotuto.settings
   - python manage.py migrate --noinput
   - npm install -g bower
   - bower install
