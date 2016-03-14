@@ -55,10 +55,11 @@ class DeviceAddTest(TestCase):
 
         device1 = self.save_device_form(name=device_name, address='1')
         device2 = self.save_device_form(name=device_name, address='2')
-        self.assertEqual(device2.slug, '%s-%s' % (device1.slug, device2.pk - 1))
+        self.assertNotEqual(device2.slug, device1.slug)
 
         device3 = self.save_device_form(name=device_name, address='3')
-        self.assertEqual(device3.slug, '%s-%s' % (device1.slug, device3.pk - 1))
+        self.assertNotEqual(device3.slug, device1.slug)
+        self.assertNotEqual(device3.slug, device2.slug)
 
     def save_device_form(self, **device_data):
         """Fill :class:`~vars.forms.DeviceForm` with data specified and return instance."""
@@ -185,10 +186,11 @@ class VarAddTest(TestCase):
 
         var1 = self.save_var_form(name=var_name)
         var2 = self.save_var_form(name=var_name)
-        self.assertEqual(var2.slug, '%s-%s' % (var1.slug, var2.pk - 1))
+        self.assertNotEqual(var2.slug, var1.slug)
 
         var3 = self.save_var_form(name=var_name)
-        self.assertEqual(var3.slug, '%s-%s' % (var1.slug, var3.pk - 1))
+        self.assertNotEqual(var3.slug, var1.slug)
+        self.assertNotEqual(var3.slug, var2.slug)
 
     def save_var_form(self, **var_data):
         """Fill :class:`~var.forms.VarForm` with data specified and return instance."""

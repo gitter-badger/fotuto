@@ -81,10 +81,11 @@ class WindowAddTest(TestCase):
 
         win1 = self.save_window_form(title=window_title)
         win2 = self.save_window_form(title=window_title)
-        self.assertEqual(win2.slug, '%s-%s' % (win1.slug, win2.pk - 1))
+        self.assertNotEquals(win2.slug, win1.slug)
 
         win3 = self.save_window_form(title=window_title)
-        self.assertEqual(win3.slug, '%s-%s' % (win1.slug, win3.pk - 1))
+        self.assertNotEquals(win3.slug, win1.slug)
+        self.assertNotEquals(win3.slug, win2.slug)
 
     def save_window_form(self, **window_data):
         """Fill :class:`~window.forms.WindowsForm` with data specified and return instance."""
