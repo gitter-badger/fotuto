@@ -26,13 +26,13 @@ Quick Install Development Environment
 
 5. Add static resources::
 
-   sudo apt-get install npm
-   sudo npm install -g bower
-   sudo ln -s /usr/bin/nodejs /usr/bin/node
-   cd PROJECT_ROOT
-   bower install
+     sudo apt-get install npm
+     sudo npm install -g bower
+     sudo ln -s /usr/bin/nodejs /usr/bin/node
+     cd PROJECT_ROOT
+     bower install
 
-6. Start development server
+6. Start development server::
 
      python manage.py runserver
 
