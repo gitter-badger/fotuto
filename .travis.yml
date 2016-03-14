@@ -1,0 +1,26 @@
+# https://travis-ci.org/cesarcruz/fotuto
+language: python
+
+services: postgresql
+
+python:
+  - "2.6"
+  - "2.7"
+
+install:
+  - pip install -r requirements.txt
+  - pip install -r requirements_test.txt
+
+before_script:
+  - pip install codecov
+  - psql -c 'create database fotuto;' -U postgres
+  - cp fotuto/settings_local.py.example fotuto/settings_local.py
+  - python manage.py migrate --noinput
+  - npm install -g bower
+  - bower install
+
+script:
+  - python manage.py test
+
+after_success:
+  - codecov
