@@ -16,6 +16,14 @@ Quick Install Development Environment
      source env/bin/activate
      pip install -r requirments.txt
 
+   .. note:: If use PostgreSQL, maybe is requrie to install::
+
+        sudo apt-get install libpq-dev python-dev
+        pip install psycopg2
+
+      Then create the database, and change database settings by rename `fotuto/settings_local.py.example` to
+      `fotuto/settings_local.py` and change the values.
+
 3. Create Database::
 
      python migrate
