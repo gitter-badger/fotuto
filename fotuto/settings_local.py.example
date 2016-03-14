@@ -1,0 +1,13 @@
+# Do not overwrite `settings.py` files, instead of rename this file to `settings_local.py` and specify your custom
+# settings in it
+
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.postgresql_psycopg2',
+        'NAME': 'fotuto',
+        'USER': 'postgress',
+        'PASSWORD': '',
+        'HOST': '127.0.0.1',
+        'PORT': '3306',
+    }
+}

@@ -135,3 +135,8 @@ REST_FRAMEWORK = {
         'rest_framework.authentication.TokenAuthentication',
     )
 }
+
+try:
+    from settings_local import *
+except ImportError:
+    pass

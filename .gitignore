@@ -2,3 +2,4 @@
 db.sqlite3
 static/bower_components/
 _build
+settings_local.py
