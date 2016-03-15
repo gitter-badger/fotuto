@@ -1,4 +1,6 @@
 from unittest import TestCase
+
+from vars.models import Device, Var
 from vars.serializers import DeviceSerializer, VarSerializer
 
 
@@ -28,3 +30,34 @@ class VarSerializerTestCase(TestCase):
             'name': 'Alarm State',
             'slug': 'alarm-state'
         })
+
+    def test_return_var_type_human_readable_field(self):
+        device = Device.objects.create(name="Temperature Sensor 1", slug="sensor-1", address='0001')
+        serializer = VarSerializer(data={
+            'name': "Temperature 1",
+            'var_type': Var.TYPE_ANALOG,
+            'device': device.pk,
+        })
+        valid = serializer.is_valid()
+        self.assertTrue(valid, serializer.errors)
+        serializer.save()
+        self.assertDictContainsSubset({'var_type_display': 'Analog'}, serializer.data)
+
+    def test_method_get_var_type_display(self):
+        device = Device.objects.create(name="Temperature Sensor 2", slug="sensor-2", address='0002')
+        serializer = VarSerializer()
+        analog_var = Var.objects.create(**{
+            'name': "Temperature 2",
+            'slug': "t2",
+            'var_type': Var.TYPE_ANALOG,
+            'device': device,
+        })
+        self.assertEqual("Analog", serializer.get_var_type_display(analog_var))
+
+        digital_var = Var.objects.create(**{
+            'name': "Communication",
+            'slug': "c1",
+            'var_type': Var.TYPE_DIGITAL,
+            'device': device,
+        })
+        self.assertEqual("Digital", serializer.get_var_type_display(digital_var))

@@ -1,5 +1,6 @@
 from django.contrib.auth import get_user_model
 from django.core.urlresolvers import resolve
+from rest_framework import status
 from rest_framework.authtoken.models import Token
 from rest_framework.test import APITestCase
 
@@ -159,15 +160,16 @@ class VarAPITestCase(APITestCase):
            address="0002",
            description="Sensor for front door"
         )
-        self.var_1 = Var.objects.create(
-            name="Door 1 State",
-            slug="door-1-sate",
-            active=True,
-            device=self.device_1,
-            var_type="binary",
-            value=1,
-            description="Door 1 state: 1=Open, 0=Closed"
-        )
+        self.var_door_1_state_data = {
+            'name': "Door 1 State",
+            'slug': "door-1-sate",
+            'active': True,
+            'device': self.device_1,
+            'var_type': "binary",
+            'value': 1,
+            'description': "Door 1 state: 1=Open, 0=Closed"
+        }
+        self.var_door_1_state = Var.objects.create(**self.var_door_1_state_data)
         self.var_2 = Var.objects.create(
             name="Door 1 Communication",
             slug="door-1-comm",
@@ -217,7 +219,20 @@ class VarAPITestCase(APITestCase):
         self.assertEqual(response.status_code, 201, response.data)
         created_var = Var.objects.get(**var_data)
         var_data.update({'id': created_var.pk})
-        self.assertDictEqual(response.data, var_data)
+        self.assertDictContainsSubset(var_data, response.data)
+
+    def test_get_var_return_correct_data(self):
+        """Test if returned var includes the `var_type` also in a human readable format"""
+        response = self.client.get('/api/vars/%s/' % self.var_door_1_state.pk, **self.auth_header)
+        self.assertEqual(response.status_code, status.HTTP_200_OK, response.data)
+        self.var_door_1_state_data.update({
+            'id': self.var_door_1_state.pk,
+            'var_type_display': self.var_door_1_state.get_var_type_display(),
+            'device': self.var_door_1_state.device.pk,
+            'value': 1.0,
+            'units': '',
+        })
+        self.assertDictEqual(response.data, self.var_door_1_state_data)
 
 
 class MimicAPITestCase(APITestCase):

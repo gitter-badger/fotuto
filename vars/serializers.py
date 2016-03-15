@@ -14,10 +14,15 @@ class DeviceSerializer(serializers.ModelSerializer):
 
 
 class VarSerializer(serializers.ModelSerializer):
+    var_type_display = serializers.SerializerMethodField()
+
     class Meta:
         model = Var
-        read_only_fields = ('slug',)
+        read_only_fields = ('slug', 'var_type_display')
 
     def validate(self, data):
         data['slug'] = slugify(data['name'])
         return data
+
+    def get_var_type_display(self, obj):
+        return obj.get_var_type_display()

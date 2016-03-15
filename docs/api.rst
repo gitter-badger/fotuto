@@ -113,6 +113,7 @@ Example response
        "active": true,
        "device": 1,
        "var_type": "binary",
+       "var_type_display": "Digital",
        "units": "",
        "value": 1,
        "description": "Door 1 state: 1=Open, 0=Closed"
@@ -150,6 +151,7 @@ Example Response
        "active": true,
        "device": 1,
        "var_type": "binary",
+       "var_type_display": "Digital",
        "units": "",
        "value": 1,
        "description": "Door 1 state: 1=Open, 0=Closed"

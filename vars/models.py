@@ -19,9 +19,11 @@ class Device(models.Model):
 
 
 class Var(models.Model):
-    TYPE_CHOCES = (
-        ('binary', "Digital"),
-        ('real', "Analogic"),
+    TYPE_DIGITAL = 'binary'
+    TYPE_ANALOG = 'real'
+    TYPE_CHOICES = (
+        (TYPE_DIGITAL, "Digital"),
+        (TYPE_ANALOG, "Analog"),
     )
     name = models.CharField(max_length=100)
     slug = models.SlugField(max_length=100, unique=True,
@@ -29,7 +31,7 @@ class Var(models.Model):
     )
     active = models.BooleanField(default=True)
     device = models.ForeignKey(Device, related_name="vars")
-    var_type = models.CharField("Type", max_length=10, blank=True, choices=TYPE_CHOCES, default=TYPE_CHOCES[0][0])
+    var_type = models.CharField("Type", max_length=10, blank=True, choices=TYPE_CHOICES, default=TYPE_DIGITAL)
     units = models.CharField(max_length=10, blank=True)
     value = models.FloatField(blank=True, null=True, default=0)
     description = models.CharField(max_length=255, blank=True)
