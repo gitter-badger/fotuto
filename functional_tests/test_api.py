@@ -58,12 +58,12 @@ class UserAPITestCase(APITestCase):
 
     def test_user_route(self):
         """Test that we've got routing set up for a User"""
-        route = resolve('/api/users/1/')
+        route = resolve('/api/users/marti/')
         self.assertEqual(route.func.__name__, 'UserViewSet')
 
     def test_user_get_return_correct_data(self):
         """Test that we can get a User"""
-        response = self.client.get('/api/users/%s/' % self.supervisor.pk, **self.auth_header)
+        response = self.client.get('/api/users/marti/', **self.auth_header)
         self.assertEqual(response.status_code, status.HTTP_200_OK, response.data)
         operator_data = ({
             'id': self.supervisor.pk,

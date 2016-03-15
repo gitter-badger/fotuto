@@ -55,5 +55,7 @@ User = get_user_model()
 
 
 class UserViewSet(viewsets.ModelViewSet):
+    lookup_field = User.USERNAME_FIELD
+    lookup_url_kwarg = User.USERNAME_FIELD
     queryset = User.objects.all()
     serializer_class = UserSerializer
