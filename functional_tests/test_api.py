@@ -77,12 +77,15 @@ class UserAPITestCase(APITestCase):
         """Test that we can get a User"""
         response = self.client.get('/api/users/marti/', **self.auth_header)
         self.assertEqual(response.status_code, status.HTTP_200_OK, response.data)
-        operator_data = ({
+        operator_data = {
             'id': self.supervisor.pk,
             'username': self.supervisor.username,
             'full_name': "Jose Marti",
             'is_active': self.supervisor.is_active,
-        })
+            'links': {
+                'self': 'http://testserver/api/users/marti/'
+            }
+        }
         self.assertDictEqual(response.data, operator_data)
 
     def test_users_list_route(self):
