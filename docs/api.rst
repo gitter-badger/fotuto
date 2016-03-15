@@ -160,7 +160,7 @@ Example Response
 Get Mimic
 =========
 
-* URL: `/api/mimic/<pk>/`
+* URL: `/api/mimics/<pk>/`
 * HTTP Method: `GET`
 
 Example response
@@ -185,8 +185,8 @@ Example response
        "y": 0
    }
 
-Add a Variable
-==============
+Add a Mimic
+===========
 * URL: `/api/mimics/`
 * HTTP Method: `POST`
 
@@ -223,3 +223,53 @@ Example Response
        "x": 0,
        "y": 0
    }
+
+Get User
+========
+
+* URL: `/api/users/<username>/`
+* HTTP Method: `GET`
+
+Example response
+----------------
+.. code::
+
+   {
+       "id": 1,
+       "username": "marti"
+       "full_name": "Jose Marti",
+       "is_active": true
+       "groups": [
+           "operator"
+       ]
+   }
+
+Add a User
+==========
+* URL: `/api/users/`
+* HTTP Method: `POST`
+
+Example Request
+---------------
+.. code::
+
+   {
+       "id": 1,
+       "username": "ernesto"
+       "full_name": "Ernesto Guevara",
+       "is_active": true
+   }
+
+Example Response
+----------------
+.. code::
+
+   {
+       "id": 1,
+       "username": "ernesto"
+       "full_name": "Ernesto Guevara",
+       "is_active": true
+       "groups": []
+   }
+
+.. todo:: Add groups, operations to manage user's groups, permissions

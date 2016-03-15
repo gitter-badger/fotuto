@@ -1,4 +1,5 @@
 from django.contrib import messages
+from django.contrib.auth import get_user_model
 from django.contrib.messages.views import SuccessMessageMixin
 from django.core.urlresolvers import reverse_lazy, reverse
 from django.utils.datetime_safe import datetime
@@ -8,7 +9,7 @@ from rest_framework import viewsets
 
 from .forms import WindowForm
 from .models import Window
-from .serializers import WindowSerializer
+from .serializers import WindowSerializer, UserSerializer
 
 
 class WindowDefaultView(RedirectView):
@@ -47,3 +48,12 @@ class WindowCreateView(SuccessMessageMixin, CreateView):
 class WindowViewSet(viewsets.ModelViewSet):
     queryset = Window.objects.all()
     serializer_class = WindowSerializer
+
+
+# TODO: Move this logic for an user app
+User = get_user_model()
+
+
+class UserViewSet(viewsets.ModelViewSet):
+    queryset = User.objects.all()
+    serializer_class = UserSerializer

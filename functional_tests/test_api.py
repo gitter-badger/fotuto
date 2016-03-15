@@ -45,6 +45,56 @@ class APIAuthentication(APITestCase):
         self.assertEqual(response.status_code, 200, "REST token-auth failed")
 
 
+class UserAPITestCase(APITestCase):
+    def setUp(self):
+        self.operator = User.objects.create_user(
+            username="maceo", first_name="Jose", last_name="Maceo", password='123'
+        )
+        self.supervisor = User.objects.create_user(
+            username="marti", first_name="Jose", last_name="Marti", password='123'
+        )
+        self.token = Token.objects.get_or_create(user=self.operator)[0].key
+        self.auth_header = {'HTTP_AUTHORIZATION': 'Token {}'.format(self.token)}
+
+    def test_user_route(self):
+        """Test that we've got routing set up for a User"""
+        route = resolve('/api/users/1/')
+        self.assertEqual(route.func.__name__, 'UserViewSet')
+
+    def test_user_get_return_correct_data(self):
+        """Test that we can get a User"""
+        response = self.client.get('/api/users/%s/' % self.supervisor.pk, **self.auth_header)
+        self.assertEqual(response.status_code, status.HTTP_200_OK, response.data)
+        operator_data = ({
+            'id': self.supervisor.pk,
+            'username': self.supervisor.username,
+            'full_name': "Jose Marti",
+            'is_active': self.supervisor.is_active,
+        })
+        self.assertDictEqual(response.data, operator_data)
+
+    def test_users_list_route(self):
+        """Test that we've got routing set up for Users"""
+        route = resolve('/api/users/')
+        self.assertEqual(route.func.__name__, 'UserViewSet')
+
+    def test_users_list(self):
+        """Test that we can get a list of users"""
+        response = self.client.get('/api/users/', {}, **self.auth_header)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(response.data[0]['username'], "maceo")
+        self.assertEqual(response.data[1]['username'], "marti")
+
+    def test_user_create(self):
+        """Test that we can create a User"""
+        user_data = {
+            'username': "ernesto",
+            'password': "123",
+        }
+        response = self.client.post('/api/users/', data=user_data, format='json', **self.auth_header)
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED, response.data)
+
+
 class WindowAPITestCase(APITestCase):
     def setUp(self):
         self.window_1 = Window.objects.create(
@@ -102,20 +152,20 @@ class WindowAPITestCase(APITestCase):
 class DeviceAPITestCase(APITestCase):
     def setUp(self):
         self.device_1 = Device.objects.create(
-           name="Some Device 1",
-           slug="some-device-1",
-           active=True,
-           model="AA1",
-           address="0001",
-           description="Some description"
+            name="Some Device 1",
+            slug="some-device-1",
+            active=True,
+            model="AA1",
+            address="0001",
+            description="Some description"
         )
         self.device_2 = Device.objects.create(
-           name="Some Device 2",
-           slug="some-device-2",
-           active=True,
-           model="AA2",
-           address="0002",
-           description="Some description 2"
+            name="Some Device 2",
+            slug="some-device-2",
+            active=True,
+            model="AA2",
+            address="0002",
+            description="Some description 2"
         )
         self.user = User.objects.create_user('user', 'user@mail.com', '123')
         self.token = Token.objects.get_or_create(user=self.user)[0].key
@@ -136,12 +186,12 @@ class DeviceAPITestCase(APITestCase):
     def test_create_device(self):
         """Test that we can create a Device"""
         device_data = {
-           'name': "Some Device",
-           'slug': "some-device",
-           'active': True,
-           'model': "AA3",
-           'address': "0003",
-           'description': "Some description",
+            'name': "Some Device",
+            'slug': "some-device",
+            'active': True,
+            'model': "AA3",
+            'address': "0003",
+            'description': "Some description",
         }
         response = self.client.post('/api/devices/', data=device_data, format='json', **self.auth_header)
         self.assertEqual(response.status_code, 201, response.data)
@@ -153,12 +203,12 @@ class DeviceAPITestCase(APITestCase):
 class VarAPITestCase(APITestCase):
     def setUp(self):
         self.device_1 = Device.objects.create(
-           name="Door 1 Sensor",
-           slug="door-1-sensor",
-           active=True,
-           model="ISUDS-1",
-           address="0002",
-           description="Sensor for front door"
+            name="Door 1 Sensor",
+            slug="door-1-sensor",
+            active=True,
+            model="ISUDS-1",
+            address="0002",
+            description="Sensor for front door"
         )
         self.var_door_1_state_data = {
             'name': "Door 1 State",
@@ -198,12 +248,12 @@ class VarAPITestCase(APITestCase):
     def test_create_variable(self):
         """Test that we can create a Variable"""
         controller_device = Device.objects.create(
-           name="Controller-1",
-           slug="controller-1",
-           active=True,
-           model="ISUCALARM-1",
-           address="0001",
-           description="Controller for the alarm system"
+            name="Controller-1",
+            slug="controller-1",
+            active=True,
+            model="ISUCALARM-1",
+            address="0001",
+            description="Controller for the alarm system"
         )
         var_data = {
             'name': "Alarm State",
@@ -238,12 +288,12 @@ class VarAPITestCase(APITestCase):
 class MimicAPITestCase(APITestCase):
     def setUp(self):
         self.device_alarm_controller = Device.objects.create(
-           name="Alarm Controller",
-           slug="alarm-controller",
-           active=True,
-           model="ISUCALARM-1",
-           address="0001",
-           description="Alarm Controller with arduino"
+            name="Alarm Controller",
+            slug="alarm-controller",
+            active=True,
+            model="ISUCALARM-1",
+            address="0001",
+            description="Alarm Controller with arduino"
         )
         self.var_door_state = Var.objects.create(
             name="Door 1 State",
@@ -278,17 +328,17 @@ class MimicAPITestCase(APITestCase):
             description="Home Security System"
         )
         self.mimic_alarm_spotlight = Mimic.objects.create(
-           name="Alarm Spotlight",
-           window=self.window_security,
-           x=0,
-           y=0
+            name="Alarm Spotlight",
+            window=self.window_security,
+            x=0,
+            y=0
         )
         self.mimic_alarm_spotlight.vars.add(self.var_alarm_state)
         self.mimic_sensor_front_door = Mimic.objects.create(
-           name="Front Door Sensor",
-           window=self.window_security,
-           x=100,
-           y=0
+            name="Front Door Sensor",
+            window=self.window_security,
+            x=100,
+            y=0
         )
         self.mimic_sensor_front_door.vars.add(self.var_door_state)
         self.mimic_sensor_front_door.vars.add(self.var_sensor_door_comm)
@@ -323,5 +373,5 @@ class MimicAPITestCase(APITestCase):
         mimic_data.update({'id': created_mimic.pk, 'vars': []})
         self.assertDictEqual(response.data, mimic_data)
 
-    # TODO: By default mimic request should return vars info
-    # TODO: Test list/view/create/update/delete vars to a mimic
+        # TODO: By default mimic request should return vars info
+        # TODO: Test list/view/create/update/delete vars to a mimic
