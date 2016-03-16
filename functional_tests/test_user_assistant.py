@@ -1,8 +1,8 @@
 from .base import FunctionalTest
 
 
-class SupervisorTest(FunctionalTest):
-    def test_supervisor_can_view_mimics_and_charts(self):
+class AssistantTest(FunctionalTest):
+    def test_assistant_can_view_mimics_and_charts(self):
         # A visitor go to Fotuto homepage
         self.browser.get(self.server_url)
 
@@ -10,7 +10,7 @@ class SupervisorTest(FunctionalTest):
         self.assertIn("Fotuto", self.browser.title)
 
         # A login form is shown
-        # Since visitor have supervisor credentials he type it and proceed to log-in
+        # Since visitor have assistant credentials he type it and proceed to log-in
         # TODO: Test login form
 
         # Then default mimic page is shown

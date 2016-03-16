@@ -16,12 +16,12 @@ class PermissionTest(FunctionalTest):
         self.registered_data = {'username': 'registered', 'password': 'demo'}
         self.registered = self.create_user_with_permission(**self.registered_data)
 
-        # Create Supervisor user
-        self.supervisor_data = {'username': 'supervisor', 'password': 'demo'}
-        supervisor_permissions = (
+        # Create Assistant user
+        self.assistant_data = {'username': 'assistant', 'password': 'demo'}
+        assistant_permissions = (
             'view_var', 'view_device', 'view_mimic', 'view_window'
         )
-        self.supervisor = self.create_user_with_permission(supervisor_permissions, **self.supervisor_data)
+        self.assistant = self.create_user_with_permission(assistant_permissions, **self.assistant_data)
 
         # Create Operator user
         self.operator_data = {'username': 'operator', 'password': 'demo'}
@@ -47,30 +47,30 @@ class PermissionTest(FunctionalTest):
     def test_operator_can_add_objects(self):
         pass
 
-    def test_only_operator_and_supervisor_can_view_objects(self):
+    def test_only_operator_and_assistant_can_view_objects(self):
         pass
 
-    def test_non_operator_and_supervisor_cant_view_objects(self):
+    def test_non_operator_and_assistant_cant_view_objects(self):
         pass
 
-    def test_operator_and_supervisor_groups_exists_with_permissions(self):
+    def test_operator_and_assistant_groups_exists_with_permissions(self):
         pass
 
-    def test_new_created_users_are_in_supervisor_group(self):
+    def test_new_created_users_are_in_assistant_group(self):
         pass
 
     def test_public_window_can_view_by_visitor_and_registered(self):
         pass
 
-    def test_private_window_can_viewed_by_supervisor_and_operator(self):
+    def test_private_window_can_viewed_by_assistant_and_operator(self):
         pass
 
     def test_visitor_registered_menu(self):
         pass
 
-    def test_supervisor_menu(self):
-        # A supervisor logs in
-        self.user_login(**self.supervisor_data)
+    def test_assistant_menu(self):
+        # A assistant logs in
+        self.user_login(**self.assistant_data)
 
         # He notice some menu items:
         # Menu "Dashboards"

@@ -27,7 +27,7 @@ class WindowSerializer(serializers.ModelSerializer):
         }
 
 
-# TODO: Move this for an app to handle operators, supervisors, etc
+# TODO: Move this for an app to handle operators, assistants, etc
 User = get_user_model()
 
 

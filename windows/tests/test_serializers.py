@@ -32,7 +32,7 @@ class WindowSerializerTestCase(TestCase):
         )
 
 
-# TODO: Move this for an app to handle operators, supervisors, etc
+# TODO: Move this for an app to handle operators, assistants, etc
 class UserSerializerTestCase(TestCase):
     def setUp(self):
         self.factory = APIRequestFactory()

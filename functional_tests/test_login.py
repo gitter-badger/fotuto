@@ -6,10 +6,10 @@ class LoginTest(FunctionalTest):
     def setUp(self):
         super(LoginTest, self).setUp()
         # Create users to login
-        self.supervisor_data = {'username': 'supervisor', 'password': 'demo'}
+        self.assistant_data = {'username': 'assistant', 'password': 'demo'}
         self.operator_data = {'username': 'operator', 'password': 'demo'}
         self.operator = self.create_user_with_permission(**self.operator_data)
-        self.supervisor = self.create_user_with_permission(**self.supervisor_data)
+        self.assistant = self.create_user_with_permission(**self.assistant_data)
 
     def test_wrong_credentials(self):
         # A visitor try to logs with wrong password
@@ -33,15 +33,15 @@ class LoginTest(FunctionalTest):
         # Operator logs out
         self.user_logout()
 
-        # Other visitor logs in with supervisor credentials
-        self.user_login(self.supervisor_data['username'], self.supervisor_data['password'])
+        # Other visitor logs in with assistant credentials
+        self.user_login(self.assistant_data['username'], self.assistant_data['password'])
 
-        # Supervisor see that he is logged in
-        self.check_user_logged_in(self.supervisor.username)
+        # Assistant see that he is logged in
+        self.check_user_logged_in(self.assistant.username)
 
     def test_logout_page(self):
         # User log in
-        self.user_login(self.supervisor_data['username'], self.supervisor_data['password'])
+        self.user_login(self.assistant_data['username'], self.assistant_data['password'])
         # User logs out
         self.user_logout()
 

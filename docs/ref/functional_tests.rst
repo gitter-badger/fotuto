@@ -44,10 +44,10 @@ functional_tests.test_user_operator module
     :undoc-members:
     :show-inheritance:
 
-functional_tests.test_user_supervisor module
+functional_tests.test_user_assistant module
 --------------------------------------------
 
-.. automodule:: functional_tests.test_user_supervisor
+.. automodule:: functional_tests.test_user_assistant
     :members:
     :undoc-members:
     :show-inheritance:
