@@ -24,6 +24,7 @@ class DeviceSerializer(serializers.ModelSerializer):
 
 class VarSerializer(serializers.ModelSerializer):
     var_type_display = serializers.SerializerMethodField()
+    links = serializers.SerializerMethodField()
 
     class Meta:
         model = Var
@@ -35,3 +36,9 @@ class VarSerializer(serializers.ModelSerializer):
 
     def get_var_type_display(self, obj):
         return obj.get_var_type_display()
+
+    def get_links(self, obj):
+        request = self.context['request']
+        return {
+            'self': drf_reverse('var-detail', kwargs={'pk': obj.pk}, request=request),
+        }

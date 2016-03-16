@@ -318,7 +318,8 @@ class VarAPITestCase(APITestCase):
 
     def test_get_var_return_correct_data(self):
         """Test if returned var includes the `var_type` also in a human readable format"""
-        response = self.client.get('/api/vars/%s/' % self.var_door_1_state.pk, **self.auth_header)
+        var_door_1_url_path = '/api/vars/%s/' % self.var_door_1_state.pk
+        response = self.client.get(var_door_1_url_path, **self.auth_header)
         self.assertEqual(response.status_code, status.HTTP_200_OK, response.data)
         self.var_door_1_state_data.update({
             'id': self.var_door_1_state.pk,
@@ -326,6 +327,9 @@ class VarAPITestCase(APITestCase):
             'device': self.var_door_1_state.device.pk,
             'value': 1.0,
             'units': '',
+            'links': {
+                'self': 'http://testserver%s' % var_door_1_url_path
+            }
         })
         self.assertDictEqual(response.data, self.var_door_1_state_data)
 

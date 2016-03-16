@@ -13,9 +13,13 @@ Example response
 .. code::
 
    {
+       "id": 1,
        "title": "Some Windows",
        "slug": "some-window",
-       "description": "The first window"
+       "description": "The first window",
+       "links": {
+           "self": "http://server/api/windows/1/"
+       }
    }
 
 
@@ -39,9 +43,13 @@ Example Response
 .. code::
 
    {
+       "id": 1,
        "title": "Some Windows 2",
        "slug": "some-window-2",
-       "description": "The second window"
+       "description": "The second window",
+       "links": {
+           "self": "http://server/api/windows/1/"
+       }
    }
 
 
@@ -56,12 +64,16 @@ Example response
 .. code::
 
    {
+       "id": 1,
        "name": "Some Device",
        "slug": "some-device",
        "active": true,
        "model": "AA1",
        "address": "0001",
-       "description": "Some description"
+       "description": "Some description",
+       "links": {
+           "self": "http://server/api/devices/1/"
+       }
    }
 
 
@@ -88,12 +100,16 @@ Example Response
 .. code::
 
    {
+       "id": 1,
        "name": "Some Device",
        "slug": "some-device",
        "active": true,
        "model": "AA1",
        "address": "0001",
-       "description": "Some description"
+       "description": "Some description",
+       "links": {
+           "self": "http://server/api/devices/1/"
+       }
    }
 
 Get Variable
@@ -116,7 +132,10 @@ Example response
        "var_type_display": "Digital",
        "units": "",
        "value": 1,
-       "description": "Door 1 state: 1=Open, 0=Closed"
+       "description": "Door 1 state: 1=Open, 0=Closed",
+       "links": {
+           "self": "http://server/api/vars/1/"
+       }
    }
 
 
@@ -154,7 +173,10 @@ Example Response
        "var_type_display": "Digital",
        "units": "",
        "value": 1,
-       "description": "Door 1 state: 1=Open, 0=Closed"
+       "description": "Door 1 state: 1=Open, 0=Closed",
+       "links": {
+           "self": "http://server/api/devices/1/"
+       }
    }
 
 Get Mimic
@@ -241,7 +263,10 @@ Example response
        "is_active": true
        "groups": [
            "operator"
-       ]
+       ],
+       "links": {
+           "self": "http://server/api/users/1/"
+       }
    }
 
 Add a User
@@ -269,7 +294,10 @@ Example Response
        "username": "ernesto"
        "full_name": "Ernesto Guevara",
        "is_active": true
-       "groups": []
+       "groups": [],
+       "links": {
+           "self": "http://server/api/devices/1/"
+       }
    }
 
 .. todo:: Add groups, operations to manage user's groups, permissions

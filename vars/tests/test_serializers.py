@@ -35,6 +35,9 @@ class DeviceSerializerTestCase(TestCase):
 
 
 class VarSerializerTestCase(TestCase):
+    def setUp(self):
+        self.factory = APIRequestFactory()
+
     def test_validate(self):
         """
         Tests that VarSerializer.validate() adds a slugged
@@ -49,11 +52,14 @@ class VarSerializerTestCase(TestCase):
 
     def test_return_var_type_human_readable_field(self):
         device = Device.objects.create(name="Temperature Sensor 1", slug="sensor-1", address='0001')
-        serializer = VarSerializer(data={
+        serializer = VarSerializer(
+            data={
             'name': "Temperature 1",
             'var_type': Var.TYPE_ANALOG,
             'device': device.pk,
-        })
+            },
+            context={'request': self.factory.get('/api/vars/')}
+        )
         valid = serializer.is_valid()
         self.assertTrue(valid, serializer.errors)
         serializer.save()
@@ -77,3 +83,16 @@ class VarSerializerTestCase(TestCase):
             'device': device,
         })
         self.assertEqual("Digital", serializer.get_var_type_display(digital_var))
+
+    def test_get_links(self):
+        device = Device.objects.create(name="Door 1 Sensor", slug="door-1-sensor", address='0004')
+        serializer = VarSerializer(
+            data={'name': "Door 1 State", 'slug': 'door-1-state', 'device': device.pk},
+            context={'request': self.factory.get('/api/vars/')}
+        )
+        serializer.is_valid()
+        self.assertDictEqual(serializer.errors, {}, serializer.errors)
+        var = serializer.save()
+        self.assertDictContainsSubset(
+            {'links': {'self': 'http://testserver/api/vars/%s/' % var.pk}}, serializer.data
+        )
