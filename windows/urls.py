@@ -1,12 +1,8 @@
-from django.conf.urls import patterns, include, url
+from django.conf.urls import url
 from django.views.generic import ListView
-from rest_framework import routers
 
 from .models import Window
-from .views import WindowDetailView, WindowCreateView, WindowDefaultView, WindowViewSet, UserViewSet, GroupViewSet
-
-router = routers.DefaultRouter()
-router.register(r'groups', GroupViewSet)
+from .views import WindowDetailView, WindowCreateView, WindowDefaultView
 
 urlpatterns = [
     url(r'^$', WindowDefaultView.as_view(), name="mimics"),

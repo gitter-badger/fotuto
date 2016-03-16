@@ -3,9 +3,10 @@ from django.contrib import admin
 from rest_framework import routers
 from rest_framework.authtoken import views
 
+from operators.views import UserViewSet
 from vars.views import DeviceViewSet
-from windows.views import WindowViewSet, UserViewSet
-from windows.urls import router as group_router
+from windows.views import WindowViewSet
+from operators.urls import router as operators_router
 
 router = routers.DefaultRouter()
 router.register(r'windows', WindowViewSet)
@@ -17,7 +18,7 @@ urlpatterns = [
     url(r'^api-token-auth/', views.obtain_auth_token),
     url(r'^api/', include('rest_framework.urls', namespace='rest_framework')),
     url(r'^api/', include(router.urls)),
-    url(r'^api/', include(group_router.urls)),
+    url(r'^api/', include(operators_router.urls)),
 
     url(r'^', include('django.contrib.auth.urls')),
     url(r'^', include('windows.urls')),
