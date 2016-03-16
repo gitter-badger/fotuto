@@ -238,12 +238,19 @@ class DeviceAPITestCase(APITestCase):
 
     def test_device_get_return_correct_data(self):
         """Test that we can get a Device"""
+        # Add some vars
+        var_1 = Var.objects.create(name="Door 1 State", slug="door-1-state", device=self.device_1)
+        var_2 = Var.objects.create(name="Door 1 Battery", slug="door-1-battery", device=self.device_1)
         device_1_url_path = '/api/devices/%s/' % self.device_1.pk
         response = self.client.get(device_1_url_path, **self.auth_header)
         self.assertEqual(response.status_code, status.HTTP_200_OK, response.data)
         device_data = self.device_1_data.copy()
         device_data.update({
             'id': self.device_1.pk,
+            'vars': [
+                'http://testserver/api/vars/%s/' % var_1.pk,
+                'http://testserver/api/vars/%s/' % var_2.pk,
+            ],
             'links': {
                 'self': 'http://testserver%s' % device_1_url_path
             }

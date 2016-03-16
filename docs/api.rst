@@ -79,6 +79,10 @@ Example response
        "model": "AA1",
        "address": "0001",
        "description": "Some description",
+       "vars": [
+           "http://server/api/vars/1/",
+           "http://server/api/vars/2/"
+       ],
        "links": {
            "self": "http://server/api/devices/1/"
        }
@@ -114,7 +118,11 @@ Example Response
        "active": true,
        "model": "AA1",
        "address": "0001",
-       "description": "Some description",
+       "description": "Some description",,
+       "vars": [
+           "http://server/api/vars/1/",
+           "http://server/api/vars/2/"
+       ],
        "links": {
            "self": "http://server/api/devices/1/"
        }

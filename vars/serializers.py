@@ -5,6 +5,7 @@ from .models import Device, Var
 
 
 class DeviceSerializer(serializers.ModelSerializer):
+    vars = serializers.HyperlinkedRelatedField(view_name='var-detail', read_only=True, many=True)
     links = serializers.SerializerMethodField()
 
     class Meta:
