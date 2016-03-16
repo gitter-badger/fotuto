@@ -7,11 +7,12 @@ from .models import Window
 
 
 class WindowSerializer(serializers.ModelSerializer):
+    mimics = serializers.HyperlinkedRelatedField(many=True, read_only=True, view_name='mimic-detail')
     links = serializers.SerializerMethodField()
 
     class Meta:
         model = Window
-        fields = ('id', 'title', 'slug', 'description', 'links')
+        fields = ('id', 'title', 'slug', 'description', 'mimics', 'links')
         read_only_fields = ('slug',)
 
     def validate(self, data):

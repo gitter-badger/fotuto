@@ -123,6 +123,8 @@ class WindowAPITestCase(APITestCase):
             slug="some-windows-2",
             description="The second window"
         )
+        self.mimic_1 = Mimic.objects.create(name="Mimic 1", window=self.window_1)
+        self.mimic_2 = Mimic.objects.create(name="Mimic 2", window=self.window_1)
         self.user = User.objects.create_user('user', 'user@mail.com', '123')
         self.token = Token.objects.get_or_create(user=self.user)[0].key
         self.auth_header = {'HTTP_AUTHORIZATION': 'Token {}'.format(self.token)}
@@ -172,6 +174,10 @@ class WindowAPITestCase(APITestCase):
         windows_data = self.window_1_data.copy()
         windows_data.update({
             'id': self.window_1.pk,
+            'mimics': [
+                'http://testserver/api/mimics/%s/' % self.mimic_1.pk,
+                'http://testserver/api/mimics/%s/' % self.mimic_2.pk,
+            ],
             'links': {
                 'self': 'http://testserver%s' % window_1_url_path
             }

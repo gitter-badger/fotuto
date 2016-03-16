@@ -17,6 +17,10 @@ Example response
        "title": "Some Windows",
        "slug": "some-window",
        "description": "The first window",
+       "mimics": [
+            "http://server/api/mimics/1/",
+            "http://server/api/mimics/2/"
+       ],
        "links": {
            "self": "http://server/api/windows/1/"
        }
@@ -47,6 +51,10 @@ Example Response
        "title": "Some Windows 2",
        "slug": "some-window-2",
        "description": "The second window",
+       "mimics": [
+            "http://server/api/mimics/1/",
+            "http://server/api/mimics/2/"
+       ],
        "links": {
            "self": "http://server/api/windows/1/"
        }
