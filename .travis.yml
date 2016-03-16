@@ -11,6 +11,10 @@ cache:
     - node_modules
     - bower_components
 
+addons:
+    code_climate:
+        repo_token: f1b563be21111d6d3c19acb030ecceb3b64fb32bd1dff03e89d60eca745b62c8
+
 before_install:
   - pip install codecov
 
