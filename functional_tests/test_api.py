@@ -235,7 +235,9 @@ class WindowAPITestCase(APITestCase):
                 'http://testserver/api/mimics/%s/' % self.mimic_2.pk,
             ],
             'links': {
-                'self': 'http://testserver%s' % window_1_url_path
+                'self': 'http://testserver%s' % window_1_url_path,
+                'mimics': 'http://testserver/api/mimics/?window=%s' % self.window_1.pk,
+                'vars': 'http://testserver/api/vars/?mimic__window=%s' % self.window_1.pk,
             }
         })
         self.assertDictEqual(response.data, windows_data)

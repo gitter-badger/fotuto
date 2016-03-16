@@ -32,9 +32,11 @@ class WindowSerializerTestCase(TestCase):
         )
         serializer.is_valid()
         window = serializer.save()
-        self.assertDictContainsSubset(
-            {'links': {'self': 'http://testserver/api/windows/%s/' % window.pk}}, serializer.data
-        )
+        self.assertDictContainsSubset({'links': {
+            'self': 'http://testserver/api/windows/%s/' % window.pk,
+            'mimics': 'http://testserver/api/mimics/?window=%s' % window.pk,
+            'vars': 'http://testserver/api/vars/?mimic__window=%s' % window.pk,
+        }}, serializer.data,)
 
 
 class APIRootURLTestCase(TestCase):

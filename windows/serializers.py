@@ -22,4 +22,6 @@ class WindowSerializer(serializers.ModelSerializer):
         request = self.context['request']
         return {
             'self': drf_reverse('window-detail', kwargs={'pk': obj.pk}, request=request),
+            'mimics': drf_reverse('mimic-list', request=request) + '?window={}'.format(obj.pk),
+            'vars': drf_reverse('var-list', request=request) + '?mimic__window={}'.format(obj.pk),
         }
