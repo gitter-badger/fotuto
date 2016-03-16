@@ -103,8 +103,8 @@ class UserAPITestCase(APITestCase):
         """Test that we can get a list of users"""
         response = self.client.get('/api/users/', {}, **self.auth_header)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertEqual(response.data[0]['username'], "maceo")
-        self.assertEqual(response.data[1]['username'], "marti")
+        self.assertEqual(response.data['results'][0]['username'], "maceo")
+        self.assertEqual(response.data['results'][1]['username'], "marti")
 
     def test_user_create(self):
         """Test that we can create a User"""
@@ -154,8 +154,8 @@ class GroupAPITestCase(APITestCase):
         """Test that we can get a list of Groups"""
         response = self.client.get('/api/groups/', {}, **self.auth_header)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertEqual(response.data[0]['name'], "assistants")
-        self.assertEqual(response.data[1]['name'], "operators")
+        self.assertEqual(response.data['results'][0]['name'], "assistants")
+        self.assertEqual(response.data['results'][1]['name'], "operators")
 
     def test_group_create(self):
         """Test that we can create a User"""
@@ -189,8 +189,8 @@ class WindowAPITestCase(APITestCase):
         """Test that we can get a list of windows"""
         response = self.client.get('/api/windows/', {}, **self.auth_header)
         self.assertEqual(response.status_code, 200)
-        self.assertEqual(response.data[0]['title'], "Some Windows")
-        self.assertEqual(response.data[1]['description'], 'The second window')
+        self.assertEqual(response.data['results'][0]['title'], "Some Windows")
+        self.assertEqual(response.data['results'][1]['description'], 'The second window')
 
     def test_windows_list_route(self):
         """Test that we've got routing set up for Windows"""
@@ -268,8 +268,8 @@ class DeviceAPITestCase(APITestCase):
         """Test that we can get a list of Devices"""
         response = self.client.get('/api/devices/', **self.auth_header)
         self.assertEqual(response.status_code, 200)
-        self.assertEqual(response.data[0]['name'], "Some Device 1")
-        self.assertEqual(response.data[1]['address'], "0002")
+        self.assertEqual(response.data['results'][0]['name'], "Some Device 1")
+        self.assertEqual(response.data['results'][1]['address'], "0002")
 
     def test_devices_list_route(self):
         """Test that we've got routing set up for Device"""
@@ -350,8 +350,8 @@ class VarAPITestCase(APITestCase):
         """Test that we can get a list of Variables"""
         response = self.client.get('/api/vars/', **self.auth_header)
         self.assertEqual(response.status_code, 200)
-        self.assertEqual(response.data[0]['name'], "Door 1 State")
-        self.assertEqual(response.data[1]['slug'], "door-1-comm")
+        self.assertEqual(response.data['results'][0]['name'], "Door 1 State")
+        self.assertEqual(response.data['results'][1]['slug'], "door-1-comm")
 
     def test_vars_list_route(self):
         """Test that we've got routing set up for Variables"""
@@ -472,8 +472,8 @@ class MimicAPITestCase(APITestCase):
         """Test that we can get a list of Mimics"""
         response = self.client.get('/api/mimics/', **self.auth_header)
         self.assertEqual(response.status_code, 200)
-        self.assertEqual(response.data[0]['name'], "Alarm Spotlight")
-        self.assertEqual(response.data[1]['x'], 100)
+        self.assertEqual(response.data['results'][0]['name'], "Alarm Spotlight")
+        self.assertEqual(response.data['results'][1]['x'], 100)
 
     def test_mimics_list_route(self):
         """Test that we've got routing set up for Mimic"""
