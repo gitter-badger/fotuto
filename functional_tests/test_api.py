@@ -112,11 +112,12 @@ class UserAPITestCase(APITestCase):
 
 class WindowAPITestCase(APITestCase):
     def setUp(self):
-        self.window_1 = Window.objects.create(
-            title="Some Windows",
-            slug="some-windows",
-            description="The first window"
-        )
+        self.window_1_data = {
+            'title': "Some Windows",
+            'slug': "some-windows",
+            'description': "The first window",
+        }
+        self.window_1 = Window.objects.create(**self.window_1_data)
         self.window_2 = Window.objects.create(
             title="Some Windows 2",
             slug="some-windows-2",
@@ -161,7 +162,21 @@ class WindowAPITestCase(APITestCase):
         }
         response = self.client.post('/api/windows/', data=post_data, format='json', **self.auth_header)
         self.assertEqual(response.status_code, 201, response.data)
-        self.assertEqual(response.data, post_data)
+        self.assertDictContainsSubset(post_data, response.data)
+
+    def test_window_get_return_correct_data(self):
+        """Test that we can get a Window"""
+        window_1_url_path = '/api/windows/%s/' % self.window_1.pk
+        response = self.client.get(window_1_url_path, **self.auth_header)
+        self.assertEqual(response.status_code, status.HTTP_200_OK, response.data)
+        windows_data = self.window_1_data.copy()
+        windows_data.update({
+            'id': self.window_1.pk,
+            'links': {
+                'self': 'http://testserver%s' % window_1_url_path
+            }
+        })
+        self.assertDictEqual(response.data, windows_data)
 
 
 class DeviceAPITestCase(APITestCase):

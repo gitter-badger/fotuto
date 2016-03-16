@@ -7,14 +7,22 @@ from .models import Window
 
 
 class WindowSerializer(serializers.ModelSerializer):
+    links = serializers.SerializerMethodField()
+
     class Meta:
         model = Window
-        fields = ('title', 'slug', 'description')
+        fields = ('id', 'title', 'slug', 'description', 'links')
         read_only_fields = ('slug',)
 
     def validate(self, data):
         data['slug'] = slugify(data['title'])
         return data
+
+    def get_links(self, obj):
+        request = self.context['request']
+        return {
+            'self': drf_reverse('window-detail', kwargs={'pk': obj.pk}, request=request),
+        }
 
 
 # TODO: Move this for an app to handle operators, supervisors, etc

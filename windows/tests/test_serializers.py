@@ -5,6 +5,9 @@ from windows.serializers import WindowSerializer, UserSerializer
 
 
 class WindowSerializerTestCase(TestCase):
+    def setUp(self):
+        self.factory = APIRequestFactory()
+
     def test_validate(self):
         """
         Tests that WindowSerializer.validate() adds a slugged
@@ -16,6 +19,17 @@ class WindowSerializerTestCase(TestCase):
             'title': 'A window',
             'slug': 'a-window'
         })
+
+    def test_get_links(self):
+        serializer = WindowSerializer(
+            data={'title': "Alarm system", 'slug': 'alarm-system'},
+            context={'request': self.factory.get('/api/windows/')}
+        )
+        serializer.is_valid()
+        window = serializer.save()
+        self.assertDictContainsSubset(
+            {'links': {'self': 'http://testserver/api/windows/%s/' % window.pk}}, serializer.data
+        )
 
 
 # TODO: Move this for an app to handle operators, supervisors, etc
