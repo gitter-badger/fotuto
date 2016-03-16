@@ -376,19 +376,22 @@ class MimicAPITestCase(APITestCase):
             slug="security",
             description="Home Security System"
         )
-        self.mimic_alarm_spotlight = Mimic.objects.create(
-            name="Alarm Spotlight",
-            window=self.window_security,
-            x=0,
-            y=0
-        )
+        self.mimic_alarm_spotlight_data = {
+            'name': u"Alarm Spotlight",
+            'window': self.window_security,
+            'x': 0,
+            'y': 0,
+        }
+        self.mimic_alarm_spotlight = Mimic.objects.create(**self.mimic_alarm_spotlight_data)
         self.mimic_alarm_spotlight.vars.add(self.var_alarm_state)
-        self.mimic_sensor_front_door = Mimic.objects.create(
-            name="Front Door Sensor",
-            window=self.window_security,
-            x=100,
-            y=0
-        )
+
+        self.mimic_sensor_front_door_data = {
+            'name': "Front Door Sensor",
+            'window': self.window_security,
+            'x': 100,
+            'y': 0
+        }
+        self.mimic_sensor_front_door = Mimic.objects.create(**self.mimic_sensor_front_door_data)
         self.mimic_sensor_front_door.vars.add(self.var_door_state)
         self.mimic_sensor_front_door.vars.add(self.var_sensor_door_comm)
 
@@ -420,7 +423,23 @@ class MimicAPITestCase(APITestCase):
         self.assertEqual(response.status_code, 201, response.data)
         created_mimic = Mimic.objects.get(**mimic_data)
         mimic_data.update({'id': created_mimic.pk, 'vars': []})
-        self.assertDictEqual(response.data, mimic_data)
+        self.assertDictContainsSubset(mimic_data, response.data)
+
+    def test_get_mimic_return_correct_data(self):
+        """Test if returned mimic data have all required info"""
+        mimic_sensor_front_door_url_path = '/api/mimics/%s/' % self.mimic_sensor_front_door.pk
+        response = self.client.get(mimic_sensor_front_door_url_path, **self.auth_header)
+        self.assertEqual(response.status_code, status.HTTP_200_OK, response.data)
+        mimic_data = self.mimic_sensor_front_door_data.copy()
+        mimic_data.update({
+            'id': self.mimic_sensor_front_door.pk,
+            'window': self.mimic_sensor_front_door.window.pk,
+            'vars': list(self.mimic_sensor_front_door.vars.values_list('pk', flat=True)),
+            'links': {
+                'self': 'http://testserver%s' % mimic_sensor_front_door_url_path
+            }
+        })
+        self.assertEqual(mimic_data, response.data)
 
         # TODO: By default mimic request should return vars info
         # TODO: Test list/view/create/update/delete vars to a mimic

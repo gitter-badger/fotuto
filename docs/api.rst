@@ -199,12 +199,18 @@ Example response
                "var_type": "binary",
                "units": "",
                "value": 1,
-               "description": "Door 1 state: 1=Open, 0=Closed"
+               "description": "Door 1 state: 1=Open, 0=Closed",
+               "links": {
+                   "self": "http://server/api/vars/1/"
+               }
            }
        ],
        "window": 1,
        "x": 0,
-       "y": 0
+       "y": 0,
+       "links": {
+           "self": "http://server/api/mimics/1/"
+       }
    }
 
 Add a Mimic
@@ -238,12 +244,18 @@ Example Response
                "var_type": "binary",
                "units": "",
                "value": 1,
-               "description": "Door 1 state: 1=Open, 0=Closed"
+               "description": "Door 1 state: 1=Open, 0=Closed",
+               "links": {
+                   "self": "http://server/api/vars/1/"
+               }
            }
        ],
        "window": 1,
        "x": 0,
-       "y": 0
+       "y": 0,
+       "links": {
+           "self": "http://server/api/mimics/1/"
+       }
    }
 
 Get User
