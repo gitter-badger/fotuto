@@ -5,6 +5,7 @@ from django.template import RequestContext
 from django.template.loader import render_to_string
 from django.test import TestCase
 from django.utils.datetime_safe import datetime
+
 from windows.forms import WindowForm
 from windows.models import Window
 from windows.views import WindowDetailView

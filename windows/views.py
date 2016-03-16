@@ -5,6 +5,9 @@ from django.utils.datetime_safe import datetime
 from django.views.generic import CreateView, DetailView
 from django.views.generic.base import RedirectView
 from rest_framework import viewsets
+from rest_framework.decorators import api_view
+from rest_framework.response import Response
+from rest_framework.reverse import reverse as drf_reverse
 
 from .forms import WindowForm
 from .models import Window
@@ -48,3 +51,11 @@ class WindowViewSet(viewsets.ModelViewSet):
     queryset = Window.objects.all()
     serializer_class = WindowSerializer
 
+
+@api_view(['GET'])
+def api_root(request, format=None):
+    return Response({
+        'windows': drf_reverse('window-list', request=request, format=format),
+        'devices': drf_reverse('device-list', request=request, format=format),
+        'users': drf_reverse('user-list', request=request, format=format),
+    })

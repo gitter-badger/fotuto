@@ -35,7 +35,7 @@ class APIAuthentication(APITestCase):
     def test_obtain_token(self):
         """Registered users can request for a token"""
         user2 = User.objects.create_user('user2', 'user2@mail.com', '123')
-        response = self.client.post('/api-token-auth/', {'username': user2.username, 'password': '123'})
+        response = self.client.post('/api/token/', {'username': user2.username, 'password': '123'})
         self.assertEqual(response.status_code, 200, response.data)
         self.assertTrue('token' in response.data)
         # TODO: Test for not empty or null token value
@@ -304,9 +304,8 @@ class DeviceAPITestCase(APITestCase):
         device_data.update({
             'id': self.device_1.pk,
             'vars': [
-                'http://testserver/api/vars/%s/' % var_2.pk,
-                'http://testserver/api/vars/%s/' % var_1.pk,
-            ],
+                'http://testserver/api/vars/%s/' % var_pk for var_pk in self.device_1.vars.values_list('pk', flat=True)
+                ],
             'links': {
                 'self': 'http://testserver%s' % device_1_url_path
             }

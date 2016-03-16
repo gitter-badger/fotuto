@@ -1,26 +1,16 @@
 from django.conf.urls import include, url
 from django.contrib import admin
-from rest_framework import routers
 from rest_framework.authtoken import views
 
-from operators.views import UserViewSet
-from vars.views import DeviceViewSet
-from windows.views import WindowViewSet
-from operators.urls import router as operators_router
-
-router = routers.DefaultRouter()
-router.register(r'windows', WindowViewSet)
-router.register(r'devices', DeviceViewSet)
-router.register(r'users', UserViewSet)
-
+from windows.views import api_root
 
 urlpatterns = [
-    url(r'^api-token-auth/', views.obtain_auth_token),
+    url(r'^api/token/', views.obtain_auth_token, name='api-token'),
+    url(r'^api/$', api_root),
     url(r'^api/', include('rest_framework.urls', namespace='rest_framework')),
-    url(r'^api/', include(router.urls)),
-    url(r'^api/', include(operators_router.urls)),
 
     url(r'^', include('django.contrib.auth.urls')),
+    url(r'^', include('operators.urls')),
     url(r'^', include('windows.urls')),
     url(r'^', include('mimics.urls')),
     url(r'^', include('vars.urls')),
