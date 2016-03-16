@@ -1,9 +1,12 @@
 from django.utils.text import slugify
 from rest_framework import serializers
+from rest_framework.reverse import reverse as drf_reverse
 from .models import Device, Var
 
 
 class DeviceSerializer(serializers.ModelSerializer):
+    links = serializers.SerializerMethodField()
+
     class Meta:
         model = Device
         read_only_fields = ('slug',)
@@ -11,6 +14,12 @@ class DeviceSerializer(serializers.ModelSerializer):
     def validate(self, data):
         data['slug'] = slugify(data['name'])
         return data
+
+    def get_links(self, obj):
+        request = self.context['request']
+        return {
+            'self': drf_reverse('device-detail', kwargs={'pk': obj.pk}, request=request),
+        }
 
 
 class VarSerializer(serializers.ModelSerializer):

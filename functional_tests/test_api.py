@@ -181,14 +181,15 @@ class WindowAPITestCase(APITestCase):
 
 class DeviceAPITestCase(APITestCase):
     def setUp(self):
-        self.device_1 = Device.objects.create(
-            name="Some Device 1",
-            slug="some-device-1",
-            active=True,
-            model="AA1",
-            address="0001",
-            description="Some description"
-        )
+        self.device_1_data = {
+            'name': "Some Device 1",
+            'slug': "some-device-1",
+            'active': True,
+            'model': "AA1",
+            'address': "0001",
+            'description': "Some description"
+        }
+        self.device_1 = Device.objects.create(**self.device_1_data)
         self.device_2 = Device.objects.create(
             name="Some Device 2",
             slug="some-device-2",
@@ -227,6 +228,20 @@ class DeviceAPITestCase(APITestCase):
         self.assertEqual(response.status_code, 201, response.data)
         created_device = Device.objects.get(**device_data)
         device_data.update({'id': created_device.pk})
+        self.assertDictContainsSubset(device_data, response.data)
+
+    def test_device_get_return_correct_data(self):
+        """Test that we can get a Device"""
+        device_1_url_path = '/api/devices/%s/' % self.device_1.pk
+        response = self.client.get(device_1_url_path, **self.auth_header)
+        self.assertEqual(response.status_code, status.HTTP_200_OK, response.data)
+        device_data = self.device_1_data.copy()
+        device_data.update({
+            'id': self.device_1.pk,
+            'links': {
+                'self': 'http://testserver%s' % device_1_url_path
+            }
+        })
         self.assertDictEqual(response.data, device_data)
 
 

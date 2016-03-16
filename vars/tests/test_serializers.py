@@ -1,10 +1,15 @@
 from unittest import TestCase
 
+from rest_framework.test import APIRequestFactory
+
 from vars.models import Device, Var
 from vars.serializers import DeviceSerializer, VarSerializer
 
 
 class DeviceSerializerTestCase(TestCase):
+    def setUp(self):
+        self.factory = APIRequestFactory()
+
     def test_validate(self):
         """
         Tests that DeviceSerializer.validate() adds a slugged
@@ -16,6 +21,17 @@ class DeviceSerializerTestCase(TestCase):
             'name': 'A Device',
             'slug': 'a-device'
         })
+
+    def test_get_links(self):
+        serializer = DeviceSerializer(
+            data={'name': "Alarm Controller", 'slug': 'alarm-controller', 'address': '0005'},
+            context={'request': self.factory.get('/api/devices/')}
+        )
+        serializer.is_valid()
+        device = serializer.save()
+        self.assertDictContainsSubset(
+            {'links': {'self': 'http://testserver/api/devices/%s/' % device.pk}}, serializer.data
+        )
 
 
 class VarSerializerTestCase(TestCase):
