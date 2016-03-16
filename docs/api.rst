@@ -326,7 +326,7 @@ Example response
 
    {
        "id": 1,
-       "name": "operator"
+       "name": "operators"
        "links": {
            "self": "http://server/api/groups/1/"
        }
@@ -342,7 +342,7 @@ Example Request
 .. code::
 
    {
-       "name": "operator"
+       "name": "assistants"
    }
 
 Example Response
@@ -351,9 +351,9 @@ Example Response
 
    {
        "id": 1,
-       "name": "operator"
+       "name": "assistants"
        "links": {
-           "self": "http://server/api/groups/1/"
+           "self": "http://server/api/groups/2/"
        }
    }
 

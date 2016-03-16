@@ -118,8 +118,8 @@ class UserAPITestCase(APITestCase):
 
 class GroupAPITestCase(APITestCase):
     def setUp(self):
-        self.group_assistant = Group.objects.create(name="assistant")
-        self.group_operator = Group.objects.create(name="operator")
+        self.group_assistant = Group.objects.get(name="assistants")
+        self.group_operator = Group.objects.get(name="operators")
         self.user_operator = User.objects.create_user(
             username="marti", first_name="Jose", last_name="Marti", password='123'
         )
@@ -138,7 +138,7 @@ class GroupAPITestCase(APITestCase):
         self.assertEqual(response.status_code, status.HTTP_200_OK, response.data)
         group_data = {
             'id': self.group_assistant.pk,
-            'name': 'assistant',
+            'name': 'assistants',
             'links': {
                 'self': 'http://testserver/api/groups/%s/' % self.group_assistant.pk
             }
@@ -154,8 +154,8 @@ class GroupAPITestCase(APITestCase):
         """Test that we can get a list of Groups"""
         response = self.client.get('/api/groups/', {}, **self.auth_header)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertEqual(response.data[0]['name'], "assistant")
-        self.assertEqual(response.data[1]['name'], "operator")
+        self.assertEqual(response.data[0]['name'], "assistants")
+        self.assertEqual(response.data[1]['name'], "operators")
 
     def test_group_create(self):
         """Test that we can create a User"""
