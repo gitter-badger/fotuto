@@ -150,7 +150,8 @@ Example response
        "value": 1,
        "description": "Door 1 state: 1=Open, 0=Closed",
        "links": {
-           "self": "http://server/api/vars/1/"
+           "self": "http://server/api/vars/1/",
+           "device": "http://server/api/device/1/"
        }
    }
 
@@ -191,7 +192,8 @@ Example Response
        "value": 1,
        "description": "Door 1 state: 1=Open, 0=Closed",
        "links": {
-           "self": "http://server/api/devices/1/"
+           "self": "http://server/api/vars/1/",
+           "device": "http://server/api/devices/1/"
        }
    }
 

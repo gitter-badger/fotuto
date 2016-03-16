@@ -341,7 +341,8 @@ class VarAPITestCase(APITestCase):
             'value': 1.0,
             'units': '',
             'links': {
-                'self': 'http://testserver%s' % var_door_1_url_path
+                'self': 'http://testserver%s' % var_door_1_url_path,
+                'device': 'http://testserver/api/devices/%s/' % self.var_door_1_state.device.pk,
             }
         })
         self.assertDictEqual(response.data, self.var_door_1_state_data)

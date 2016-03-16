@@ -93,6 +93,9 @@ class VarSerializerTestCase(TestCase):
         serializer.is_valid()
         self.assertDictEqual(serializer.errors, {}, serializer.errors)
         var = serializer.save()
-        self.assertDictContainsSubset(
-            {'links': {'self': 'http://testserver/api/vars/%s/' % var.pk}}, serializer.data
-        )
+        self.assertDictContainsSubset({
+            'links': {
+                'self': 'http://testserver/api/vars/%s/' % var.pk,
+                'device': 'http://testserver/api/devices/%s/' % var.device.pk,
+            }
+        }, serializer.data)

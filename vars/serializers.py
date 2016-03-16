@@ -42,4 +42,5 @@ class VarSerializer(serializers.ModelSerializer):
         request = self.context['request']
         return {
             'self': drf_reverse('var-detail', kwargs={'pk': obj.pk}, request=request),
+            'device': drf_reverse('device-detail', kwargs={'pk': obj.device.pk}, request=request),
         }
