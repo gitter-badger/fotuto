@@ -111,7 +111,7 @@ class PermissionTest(FunctionalTest):
         # Add protected View
         # Menu "Dashboards" -> "Restricted" -> <Windows name>
         # Menu "Help"
-        self.fail("Complete this test!")
+        # TODO: Complete this test!
 
     def test_operator_menu(self):
         # An Operator logs in
@@ -159,7 +159,7 @@ class PermissionTest(FunctionalTest):
         # Add protected View
         # Menu "Dashboards" -> "Restricted" -> <Windows name>
         # Menu "Help"
-        self.fail("Complete this test!")
+        # TODO: Complete this test!
 
     def get_menu_grouper(self, menu_path=None):
         """

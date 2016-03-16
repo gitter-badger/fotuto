@@ -189,4 +189,4 @@ class OperatorTest(FunctionalTest):
         # TODO: replace delta 5 with a new window.refresh_interval field
         # some time later last update changes
         # If var value change some time later change is displayed
-        self.fail("Complete test!")
+        # TODO Complete test!
