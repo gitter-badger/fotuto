@@ -22,7 +22,9 @@ Example response
             "http://server/api/mimics/2/"
        ],
        "links": {
-           "self": "http://server/api/windows/1/"
+           "self": "http://server/api/windows/1/",
+           "mimics": "http://server/api/mimics/?window=1",
+           "vars": "http://server/api/vars/?mimic__window=1"
        }
    }
 
@@ -56,7 +58,9 @@ Example Response
             "http://server/api/mimics/2/"
        ],
        "links": {
-           "self": "http://server/api/windows/1/"
+           "self": "http://server/api/windows/1/",
+           "mimics": "http://server/api/mimics/?window=1",
+           "vars": "http://server/api/vars/?mimic__window=1"
        }
    }
 
@@ -84,7 +88,8 @@ Example response
            "http://server/api/vars/2/"
        ],
        "links": {
-           "self": "http://server/api/devices/1/"
+           "self": "http://server/api/devices/1/",
+           "vars": "http://server/api/vars/?device=1"
        }
    }
 
@@ -124,7 +129,8 @@ Example Response
            "http://server/api/vars/2/"
        ],
        "links": {
-           "self": "http://server/api/devices/1/"
+           "self": "http://server/api/devices/1/",
+           "vars": "http://server/api/vars/?device=1"
        }
    }
 
@@ -218,7 +224,8 @@ Example response
        "y": 0,
        "links": {
            "self": "http://server/api/mimics/1/",
-           "window": "http://server/api/windows/1/"
+           "window": "http://server/api/windows/1/",
+           "vars": "http://server/api/vars/?mimic=1"
        }
    }
 
@@ -255,7 +262,8 @@ Example Response
        "y": 0,
        "links": {
            "self": "http://server/api/mimics/1/",
-           "window": "http://server/api/windows/1/"
+           "window": "http://server/api/windows/1/",
+           "vars": "http://server/api/vars/?mimic=1"
        }
    }
 
