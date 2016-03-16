@@ -86,7 +86,7 @@ class UserAPITestCase(APITestCase):
             'full_name': "Jose Marti",
             'is_active': self.assistant.is_active,
             'groups': [
-                'http://testserver/api/groups/1/'
+                'http://testserver/api/groups/%s/' % group.pk
             ],
             'links': {
                 'self': 'http://testserver/api/users/marti/'
@@ -134,13 +134,13 @@ class GroupAPITestCase(APITestCase):
 
     def test_group_get_return_correct_data(self):
         """Test that we can get a Group"""
-        response = self.client.get('/api/groups/1/', **self.auth_header)
+        response = self.client.get('/api/groups/%s/' % self.group_assistant.pk, **self.auth_header)
         self.assertEqual(response.status_code, status.HTTP_200_OK, response.data)
         group_data = {
             'id': self.group_assistant.pk,
             'name': 'assistant',
             'links': {
-                'self': 'http://testserver/api/groups/1/'
+                'self': 'http://testserver/api/groups/%s/' % self.group_assistant.pk
             }
         }
         self.assertDictEqual(response.data, group_data)
@@ -304,8 +304,8 @@ class DeviceAPITestCase(APITestCase):
         device_data.update({
             'id': self.device_1.pk,
             'vars': [
-                'http://testserver/api/vars/%s/' % var_1.pk,
                 'http://testserver/api/vars/%s/' % var_2.pk,
+                'http://testserver/api/vars/%s/' % var_1.pk,
             ],
             'links': {
                 'self': 'http://testserver%s' % device_1_url_path

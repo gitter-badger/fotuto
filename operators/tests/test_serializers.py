@@ -42,5 +42,5 @@ class GroupSerializerTestCase(TestCase):
             context={'request': self.factory.get('/api/groups/')}
         )
         serializer.is_valid()
-        serializer.save()
-        self.assertDictContainsSubset({'links': {'self': 'http://testserver/api/groups/1/'}}, serializer.data)
+        group = serializer.save()
+        self.assertDictContainsSubset({'links': {'self': 'http://testserver/api/groups/%s/' % group.pk}}, serializer.data)
