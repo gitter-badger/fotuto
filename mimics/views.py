@@ -37,3 +37,4 @@ class MimicManageView(SuccessMessageMixin, CreateView):
 class MimicViewSet(viewsets.ModelViewSet):
     queryset = Mimic.objects.all()
     serializer_class = MimicSerializer
+    filter_fields = ('window',)

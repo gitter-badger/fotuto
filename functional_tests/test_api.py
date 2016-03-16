@@ -543,5 +543,15 @@ class MimicAPITestCase(APITestCase):
         })
         self.assertDictEqual(mimic_data, response.data)
 
-        # TODO: By default mimic request should return vars info
-        # TODO: Test list/view/create/update/delete vars to a mimic
+    def test_filter_routes(self):
+        # Find mimic by a window
+        filter_by_window_url_path = '/api/mimics/?window=%s' % self.mimic_alarm_spotlight.window.pk
+        response = self.client.get(filter_by_window_url_path, **self.auth_header)
+        self.assertEqual(response.status_code, 200)
+        self.assertGreaterEqual(response.data['count'], 1)
+
+        # No window returns 0 mimic
+        filter_by_window_url_path = '/api/mimics/?window=0'
+        response = self.client.get(filter_by_window_url_path, **self.auth_header)
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.data['count'], 0)
