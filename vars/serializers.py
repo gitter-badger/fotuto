@@ -20,6 +20,7 @@ class DeviceSerializer(serializers.ModelSerializer):
         request = self.context['request']
         return {
             'self': drf_reverse('device-detail', kwargs={'pk': obj.pk}, request=request),
+            'vars': drf_reverse('var-list', request=request) + '?device={}'.format(obj.pk),
         }
 
 

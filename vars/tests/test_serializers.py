@@ -29,9 +29,10 @@ class DeviceSerializerTestCase(TestCase):
         )
         serializer.is_valid()
         device = serializer.save()
-        self.assertDictContainsSubset(
-            {'links': {'self': 'http://testserver/api/devices/%s/' % device.pk}}, serializer.data
-        )
+        self.assertDictContainsSubset({'links': {
+            'self': 'http://testserver/api/devices/{}/'.format(device.pk),
+            'vars': 'http://testserver/api/vars/?device={}'.format(device.pk),
+        }}, serializer.data)
 
 
 class VarSerializerTestCase(TestCase):
@@ -54,9 +55,9 @@ class VarSerializerTestCase(TestCase):
         device = Device.objects.create(name="Temperature Sensor 1", slug="sensor-1", address='0001')
         serializer = VarSerializer(
             data={
-            'name': "Temperature 1",
-            'var_type': Var.TYPE_ANALOG,
-            'device': device.pk,
+                'name': "Temperature 1",
+                'var_type': Var.TYPE_ANALOG,
+                'device': device.pk,
             },
             context={'request': self.factory.get('/api/vars/')}
         )

@@ -309,7 +309,8 @@ class DeviceAPITestCase(APITestCase):
                 'http://testserver/api/vars/%s/' % var_pk for var_pk in self.device_1.vars.values_list('pk', flat=True)
                 ],
             'links': {
-                'self': 'http://testserver%s' % device_1_url_path
+                'self': 'http://testserver%s' % device_1_url_path,
+                'vars': 'http://testserver/api/vars/?device={}'.format(self.device_1.pk)
             }
         })
         self.assertDictEqual(response.data, device_data)
