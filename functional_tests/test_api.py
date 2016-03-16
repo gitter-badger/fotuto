@@ -539,6 +539,7 @@ class MimicAPITestCase(APITestCase):
             'links': {
                 'self': 'http://testserver%s' % mimic_sensor_front_door_url_path,
                 'window': 'http://testserver/api/windows/%s/' % self.mimic_sensor_front_door.window.pk,
+                'vars': 'http://testserver/api/vars/?mimic=%s' % self.mimic_sensor_front_door.pk,
             }
         })
         self.assertDictEqual(mimic_data, response.data)

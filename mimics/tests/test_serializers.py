@@ -23,5 +23,6 @@ class DeviceSerializerTestCase(TestCase):
             'links': {
                 'self': 'http://testserver/api/mimics/%s/' % mimic.pk,
                 'window': 'http://testserver/api/windows/%s/' % mimic.window.pk,
+                'vars': 'http://testserver/api/vars/?mimic=%s' % mimic.pk,
             }
         }, serializer.data)
