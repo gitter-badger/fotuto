@@ -42,3 +42,4 @@ class DeviceViewSet(viewsets.ModelViewSet):
 class VarViewSet(viewsets.ModelViewSet):
     queryset = Var.objects.all()
     serializer_class = VarSerializer
+    filter_fields = ('device', 'mimic', 'mimic__window')

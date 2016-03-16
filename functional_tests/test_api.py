@@ -402,6 +402,38 @@ class VarAPITestCase(APITestCase):
         })
         self.assertDictEqual(response.data, self.var_door_1_state_data)
 
+    def test_filter_routes(self):
+        # Find vars by a device
+        filter_by_device_url_path = '/api/vars/?device=%s' % self.var_door_1_state.device.pk
+        response = self.client.get(filter_by_device_url_path, **self.auth_header)
+        self.assertEqual(response.status_code, 200)
+        self.assertGreaterEqual(response.data['count'], 1)
+
+        # Find vars by a mimic
+        window = Window.objects.create(title="Security 2", slug="security-2")
+        mimic = Mimic.objects.create(name="Sensor Door 1", window=window)
+        mimic.vars.add(self.var_door_1_state)
+        filter_by_mimic_url_path = '/api/vars/?mimic=%s' % mimic.pk
+        response = self.client.get(filter_by_mimic_url_path, **self.auth_header)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertGreaterEqual(response.data['count'], 1)
+
+        # No mimic return 0 vars
+        filter_by_mimic_url_path = '/api/vars/?mimic=0'
+        response = self.client.get(filter_by_mimic_url_path, **self.auth_header)
+        self.assertEqual(response.data['count'], 0)
+
+        # Find vars by a window
+        filter_by_window_url_path = '/api/vars/?mimic__window=%s' % window.pk
+        response = self.client.get(filter_by_window_url_path, **self.auth_header)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertGreaterEqual(response.data['count'], 1)
+
+        # No window return 0 vars
+        filter_by_window_url_path = '/api/vars/?mimic__window=0'
+        response = self.client.get(filter_by_window_url_path, **self.auth_header)
+        self.assertEqual(response.data['count'], 0)
+
 
 class MimicAPITestCase(APITestCase):
     def setUp(self):
