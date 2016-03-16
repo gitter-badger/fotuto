@@ -442,10 +442,11 @@ class MimicAPITestCase(APITestCase):
             'window': self.mimic_sensor_front_door.window.pk,
             'vars': list(self.mimic_sensor_front_door.vars.values_list('pk', flat=True)),
             'links': {
-                'self': 'http://testserver%s' % mimic_sensor_front_door_url_path
+                'self': 'http://testserver%s' % mimic_sensor_front_door_url_path,
+                'window': 'http://testserver/api/windows/%s/' % self.mimic_sensor_front_door.window.pk,
             }
         })
-        self.assertEqual(mimic_data, response.data)
+        self.assertDictEqual(mimic_data, response.data)
 
         # TODO: By default mimic request should return vars info
         # TODO: Test list/view/create/update/delete vars to a mimic

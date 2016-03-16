@@ -19,6 +19,9 @@ class DeviceSerializerTestCase(TestCase):
         valid = serializer.is_valid()
         self.assertTrue(valid, serializer.errors)
         mimic = serializer.save()
-        self.assertDictContainsSubset(
-            {'links': {'self': 'http://testserver/api/mimics/%s/' % mimic.pk}}, serializer.data
-        )
+        self.assertDictContainsSubset({
+            'links': {
+                'self': 'http://testserver/api/mimics/%s/' % mimic.pk,
+                'window': 'http://testserver/api/windows/%s/' % mimic.window.pk,
+            }
+        }, serializer.data)

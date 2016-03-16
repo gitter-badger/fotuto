@@ -13,4 +13,5 @@ class MimicSerializer(serializers.ModelSerializer):
         request = self.context['request']
         return {
             'self': drf_reverse('mimic-detail', kwargs={'pk': obj.pk}, request=request),
+            'window': drf_reverse('window-detail', kwargs={'pk': obj.window.pk}, request=request),
         }

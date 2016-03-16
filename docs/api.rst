@@ -217,7 +217,8 @@ Example response
        "x": 0,
        "y": 0,
        "links": {
-           "self": "http://server/api/mimics/1/"
+           "self": "http://server/api/mimics/1/",
+           "window": "http://server/api/windows/1/"
        }
    }
 
@@ -262,7 +263,8 @@ Example Response
        "x": 0,
        "y": 0,
        "links": {
-           "self": "http://server/api/mimics/1/"
+           "self": "http://server/api/mimics/1/",
+           "window": "http://server/api/windows/1/"
        }
    }
 
