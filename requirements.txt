@@ -3,3 +3,4 @@ django-bootstrap3
 djangorestframework
 markdown
 django-filter
+django-crispy-forms
