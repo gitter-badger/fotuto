@@ -5,6 +5,7 @@ from rest_framework.authtoken import views
 
 from vars.views import DeviceViewSet
 from windows.views import WindowViewSet, UserViewSet
+from windows.urls import router as group_router
 
 router = routers.DefaultRouter()
 router.register(r'windows', WindowViewSet)
@@ -16,6 +17,7 @@ urlpatterns = [
     url(r'^api-token-auth/', views.obtain_auth_token),
     url(r'^api/', include('rest_framework.urls', namespace='rest_framework')),
     url(r'^api/', include(router.urls)),
+    url(r'^api/', include(group_router.urls)),
 
     url(r'^', include('django.contrib.auth.urls')),
     url(r'^', include('windows.urls')),

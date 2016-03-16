@@ -155,7 +155,6 @@ Example response
        }
    }
 
-
 Add a Variable
 ==============
 * URL: `/api/vars/`
@@ -211,17 +210,8 @@ Example response
        "id": 1,
        "name": "Front Door Sensor",
        "vars": [
-           {
-               "id": 1,
-               "name": "Door 1",
-               "var_type": "binary",
-               "units": "",
-               "value": 1,
-               "description": "Door 1 state: 1=Open, 0=Closed",
-               "links": {
-                   "self": "http://server/api/vars/1/"
-               }
-           }
+           "http://server/api/vars/1/",
+           "http://server/api/vars/2/"
        ],
        "window": 1,
        "x": 0,
@@ -257,17 +247,8 @@ Example Response
        "id": 1,
        "name": "Front Door Sensor",
        "vars": [
-           {
-               "id": 1,
-               "name": "Door 1",
-               "var_type": "binary",
-               "units": "",
-               "value": 1,
-               "description": "Door 1 state: 1=Open, 0=Closed",
-               "links": {
-                   "self": "http://server/api/vars/1/"
-               }
-           }
+           "http://server/api/vars/1/",
+           "http://server/api/vars/2/"
        ],
        "window": 1,
        "x": 0,
@@ -294,7 +275,7 @@ Example response
        "full_name": "Jose Marti",
        "is_active": true
        "groups": [
-           "operator"
+           "http://server/api/groups/operator/"
        ],
        "links": {
            "self": "http://server/api/users/1/"
@@ -311,7 +292,6 @@ Example Request
 .. code::
 
    {
-       "id": 1,
        "username": "ernesto"
        "full_name": "Ernesto Guevara",
        "is_active": true
@@ -326,10 +306,55 @@ Example Response
        "username": "ernesto"
        "full_name": "Ernesto Guevara",
        "is_active": true
-       "groups": [],
+       "groups": [
+           "http://server/api/groups/operator/"
+       ],
        "links": {
            "self": "http://server/api/devices/1/"
        }
    }
 
-.. todo:: Add groups, operations to manage user's groups, permissions
+Get Group
+=========
+
+* URL: `/api/groups/<pk>/`
+* HTTP Method: `GET`
+
+Example response
+----------------
+.. code::
+
+   {
+       "id": 1,
+       "name": "operator"
+       "links": {
+           "self": "http://server/api/groups/1/"
+       }
+   }
+
+Add a Group
+===========
+* URL: `/api/groups/`
+* HTTP Method: `POST`
+
+Example Request
+---------------
+.. code::
+
+   {
+       "name": "operator"
+   }
+
+Example Response
+----------------
+.. code::
+
+   {
+       "id": 1,
+       "name": "operator"
+       "links": {
+           "self": "http://server/api/groups/1/"
+       }
+   }
+
+.. todo:: Add operations to manage user's groups, permissions

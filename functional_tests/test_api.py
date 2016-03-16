@@ -1,4 +1,5 @@
 from django.contrib.auth import get_user_model
+from django.contrib.auth.models import Group
 from django.core.urlresolvers import resolve
 from rest_framework import status
 from rest_framework.authtoken.models import Token
@@ -62,7 +63,7 @@ class UserAPITestCase(APITestCase):
         self.operator = User.objects.create_user(
             username="maceo", first_name="Jose", last_name="Maceo", password='123'
         )
-        self.supervisor = User.objects.create_user(
+        self.assistant = User.objects.create_user(
             username="marti", first_name="Jose", last_name="Marti", password='123'
         )
         self.token = Token.objects.get_or_create(user=self.operator)[0].key
@@ -75,13 +76,18 @@ class UserAPITestCase(APITestCase):
 
     def test_user_get_return_correct_data(self):
         """Test that we can get a User"""
+        group = Group.objects.create(name="assistant")
+        self.assistant.groups.add(group)
         response = self.client.get('/api/users/marti/', **self.auth_header)
         self.assertEqual(response.status_code, status.HTTP_200_OK, response.data)
         operator_data = {
-            'id': self.supervisor.pk,
-            'username': self.supervisor.username,
+            'id': self.assistant.pk,
+            'username': self.assistant.username,
             'full_name': "Jose Marti",
-            'is_active': self.supervisor.is_active,
+            'is_active': self.assistant.is_active,
+            'groups': [
+                'http://testserver/api/groups/1/'
+            ],
             'links': {
                 'self': 'http://testserver/api/users/marti/'
             }
@@ -107,6 +113,56 @@ class UserAPITestCase(APITestCase):
             'password': "123",
         }
         response = self.client.post('/api/users/', data=user_data, format='json', **self.auth_header)
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED, response.data)
+
+
+class GroupAPITestCase(APITestCase):
+    def setUp(self):
+        self.group_assistant = Group.objects.create(name="assistant")
+        self.group_operator = Group.objects.create(name="operator")
+        self.user_operator = User.objects.create_user(
+            username="marti", first_name="Jose", last_name="Marti", password='123'
+        )
+        self.user_operator.groups.add(self.group_operator)
+        self.token = Token.objects.get_or_create(user=self.user_operator)[0].key
+        self.auth_header = {'HTTP_AUTHORIZATION': 'Token {}'.format(self.token)}
+
+    def test_group_route(self):
+        """Test that we've got routing set up for a Group"""
+        route = resolve('/api/groups/assistant/')
+        self.assertEqual(route.func.__name__, 'GroupViewSet')
+
+    def test_group_get_return_correct_data(self):
+        """Test that we can get a Group"""
+        response = self.client.get('/api/groups/1/', **self.auth_header)
+        self.assertEqual(response.status_code, status.HTTP_200_OK, response.data)
+        group_data = {
+            'id': self.group_assistant.pk,
+            'name': 'assistant',
+            'links': {
+                'self': 'http://testserver/api/groups/1/'
+            }
+        }
+        self.assertDictEqual(response.data, group_data)
+
+    def test_groups_list_route(self):
+        """Test that we've got routing set up for Groups"""
+        route = resolve('/api/groups/')
+        self.assertEqual(route.func.__name__, 'GroupViewSet')
+
+    def test_groups_list(self):
+        """Test that we can get a list of Groups"""
+        response = self.client.get('/api/groups/', {}, **self.auth_header)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(response.data[0]['name'], "assistant")
+        self.assertEqual(response.data[1]['name'], "operator")
+
+    def test_group_create(self):
+        """Test that we can create a User"""
+        group_data = {
+            'name': "other-group",
+        }
+        response = self.client.post('/api/groups/', data=group_data, format='json', **self.auth_header)
         self.assertEqual(response.status_code, status.HTTP_201_CREATED, response.data)
 
 

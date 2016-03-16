@@ -1,7 +1,7 @@
 from unittest import TestCase
 from rest_framework.test import APIRequestFactory
 
-from windows.serializers import WindowSerializer, UserSerializer
+from windows.serializers import WindowSerializer, UserSerializer, GroupSerializer
 
 
 class WindowSerializerTestCase(TestCase):
@@ -59,3 +59,17 @@ class UserSerializerTestCase(TestCase):
         serializer.is_valid()
         serializer.save()
         self.assertDictContainsSubset({'links': {'self': 'http://testserver/api/users/ernesto/'}}, serializer.data)
+
+
+class GroupSerializerTestCase(TestCase):
+    def setUp(self):
+        self.factory = APIRequestFactory()
+
+    def test_get_links(self):
+        serializer = GroupSerializer(
+            data={'name': "assistant"},
+            context={'request': self.factory.get('/api/groups/')}
+        )
+        serializer.is_valid()
+        serializer.save()
+        self.assertDictContainsSubset({'links': {'self': 'http://testserver/api/groups/1/'}}, serializer.data)

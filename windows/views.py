@@ -1,5 +1,6 @@
 from django.contrib import messages
 from django.contrib.auth import get_user_model
+from django.contrib.auth.models import Group
 from django.contrib.messages.views import SuccessMessageMixin
 from django.core.urlresolvers import reverse_lazy, reverse
 from django.utils.datetime_safe import datetime
@@ -9,7 +10,7 @@ from rest_framework import viewsets
 
 from .forms import WindowForm
 from .models import Window
-from .serializers import WindowSerializer, UserSerializer
+from .serializers import WindowSerializer, UserSerializer, GroupSerializer
 
 
 class WindowDefaultView(RedirectView):
@@ -59,3 +60,8 @@ class UserViewSet(viewsets.ModelViewSet):
     lookup_url_kwarg = User.USERNAME_FIELD
     queryset = User.objects.all()
     serializer_class = UserSerializer
+
+
+class GroupViewSet(viewsets.ModelViewSet):
+    queryset = Group.objects.all()
+    serializer_class = GroupSerializer
